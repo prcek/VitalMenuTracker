@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %} env {% endblock %}
+
+{% block content %}
+
+<table>
+<tr><th>key</th><th>value</th></tr>
+{% for key, value in env.items %}
+   <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+{% endfor %}
+</table>
+
+{% endblock %}

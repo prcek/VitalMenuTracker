@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+{% if account %}
+    {{ account.name }} {{ account.balance }} {{ account.key.id }}  {{ account.key }}
+{% else %}
+    not found
+{% endif %}
+
+{% endblock %}
+

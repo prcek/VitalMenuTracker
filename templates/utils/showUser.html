@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %} user info {% endblock %}
+
+{% block content %}
+
+{% if auth %}
+user_id: {{ user_id }}<br>
+nickname: {{ nickname }}<br>
+email: {{ email }}<br>
+admin: {{ admin }}<br>
+{% else %}
+no user<br>
+{% endif %}
+login_url: <a class="button" href="{{ login_url }}">{{ login_url }}</a><br>
+logout_url: <a class="button" href="{{ logout_url }}">{{ logout_url }}</a><br>
+
+{% endblock %}

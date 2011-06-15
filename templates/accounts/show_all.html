@@ -1,0 +1,22 @@
+
+{% extends "base.html" %}
+
+{% block title %} account list {% endblock %}
+
+
+{% block content %}
+
+{% if account_list %}
+    <table>
+    <tr><th>name</td><th>balance</th><th>recount date</th><th>actions</th></tr>
+    {% for account in account_list %}
+        <tr><td>{{account.name}}</td><td>{{account.balance}}</td><td>{{account.recount_date}}</td><td><a class='button' href='{{account.key.id}}'>show</a>&nbsp;<a class='button' href='../edit/{{account.key.id}}'>edit</a></td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no account
+{% endif %}
+    <a class='button' href='/accounts/create/'>create</a>
+    <a class='button' href='/accounts/show/'>reload</a>
+{% endblock %}
+

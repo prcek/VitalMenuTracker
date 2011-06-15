@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} utils email filter {% endblock %}
+
+{% block content %}
+<form method="post" name="form">
+{{ form.as_p }}
+<input class="button" type="submit" value="Prevest">
+<input class="button" type="button" value="Vycistit" onclick="document.form.emails.value=''; document.form.groupSize.value='20'">
+</form>
+<hr>
+<pre>
+
+
+{{ result }}
+
+
+</pre>
+
+{% endblock %}

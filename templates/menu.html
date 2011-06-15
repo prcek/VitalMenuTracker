@@ -1,0 +1,28 @@
+
+        <div id="top-tabs">
+            <ul>
+            {% for m in menu %}
+                <li {% if m.active %}class="active"{% endif %}><a href="{{ m.url }}">{{ m.name }}</a></li>
+            {% endfor %}
+            </ul>&nbsp;
+            <div class="clear"></div>
+        </div>
+        
+        {% for m in menu %}
+            {% if m.active and m.submenu %}
+                <div id="sub-tabs">
+                    <ul>
+                    {% for s in m.submenu %}
+                        {% if not forloop.first %}
+                        <li class="separator">|</li>
+                        {% endif %}
+                        <li {% if s.active %}class="active"{% endif %}><a href="{{ s.url }}">{{ s.name }}</a></li>
+                    {% endfor %}
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            {% endif %} 
+        {% endfor %}
+        
+
+

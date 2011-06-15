@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %} email group edit/create {% endblock %}
+
+{% block content %}
+
+{% if form %}
+
+<form method="post" name="form">
+{{ form.as_p }}
+<input class="button" type="submit" value="Ulozit">
+</form>
+
+{% endif %}
+
+{% if el %}
+    {{ el.name }} - {{ el.desc }}<br>
+    <ul>
+    {% for e in el.emails %} 
+        <li>{{ e }}</li>
+    {% endfor %}
+    </ul>
+
+{% endif %}
+
+{% endblock %}

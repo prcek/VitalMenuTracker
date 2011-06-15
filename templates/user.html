@@ -1,0 +1,17 @@
+<div class="user">
+    {% if auth %} 
+        {% if admin %}
+            <span><strong>ADMIN</strong></span>
+        {% endif %}
+        <span> <a href="/utils/user/"><strong>{{ username }}</strong></a> </span>
+        <span class="separator">|</span>
+        <span> <a href="{{ logout_url }}"><strong>logout</strong></a> </span>
+        <span class="separator">|</span>
+        <span> <a href="/utils/help/"><strong>help</strong></a> </span>
+    {% else %}
+        <span> <a href="{{ login_url }}"><strong>login</strong></a> </span>
+        <span class="separator">|</span>
+        <span> <a href="/utils/help/"><strong>help</strong></a> </span>
+    {% endif %}
+</div>
+
