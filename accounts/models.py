@@ -1,6 +1,8 @@
 from appengine_django.models import BaseModel
 from google.appengine.ext import db
 import datetime
+import logging
+
 
 # Create your models here.
 class Account(BaseModel):
@@ -8,7 +10,7 @@ class Account(BaseModel):
     desc = db.StringProperty()
     balance = db.IntegerProperty()
     recount_date = db.DateTimeProperty('last recount') 
-    change_date = db.DateTimeProperty('date changed')
+    last_change = db.DateTimeProperty('date changed')
     def __unicode__(self):
        return self.name
 
@@ -26,14 +28,24 @@ class Account(BaseModel):
 
 
 class Transaction(BaseModel):
-    srcAccount = db.ReferenceProperty(Account, collection_name="srcTransaction_set")
-    dstAccount = db.ReferenceProperty(Account, collection_name="dstTransaction_set")
+    counterAccount = db.ReferenceProperty(Account)
     amount = db.IntegerProperty()
     create_date = db.DateTimeProperty() 
     desc = db.StringProperty(); 
     def setDate(self):
         self.create_date = datetime.datetime.utcnow()
 
+    def trSave(self):
+        a = Account.get(self.parent_key())
+        if a.balance == None:
+            a.balance = 0
+        a.balance+=self.amount
+        a.last_change = datetime.datetime.utcnow()
+        a.save()
+        return BaseModel.save(self)
+
+    def save(self):
+        return db.run_in_transaction(self.trSave)
    
                  
 

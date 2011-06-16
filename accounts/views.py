@@ -66,19 +66,24 @@ def edit_account(request, account_id):
         form = AccountForm(instance=account)
     return render_to_response('accounts/edit_account.html', { 'form': form , 'request':request})  
 
-def transaction_show_all(request):
+def transaction_show_all(request, account_id):
     transaction_list = Transaction.objects.all().fetch(100)
     return render_to_response('accounts/transaction_show_all.html', { 'request': request , 'transaction_list': transaction_list})
 
-def transaction_create(request):
+def transaction_create(request, account_id):
+    account = Account.get_by_id(int(account_id))
+    if account is None:
+        raise Http404
+ 
     if request.method == 'POST':
-        form = TransactionForm(request.POST)
+        t = Transaction(parent=account)
+        form = TransactionForm(request.POST, instance=t)
         if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.setDate()
-            transaction.save()
-            logging.info('new transaction created - id: %s key: %s data: %s' % (transaction.key().id() , transaction.key(), transaction))
-            return redirect('/accounts/transaction/')
+            form.save(commit=False)
+            t.setDate()
+            t.save()
+            logging.info('new transaction created - id: %s key: %s data: %s' % (t.key().id() , t.key(), t))
+            return redirect('/accounts/transaction/'+account_id+'/')
     else:
         form = TransactionForm() 
 

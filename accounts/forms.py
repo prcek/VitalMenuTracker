@@ -21,13 +21,7 @@ class TransactionForm(forms.ModelForm):
 
     def clean_amount(self):
         data = self.cleaned_data['amount']
-        if data<=0:
-            raise forms.ValidationError('wrong value (<=0)')
+        if data==0:
+            raise forms.ValidationError('wrong value (0)')
         return data
 
-    def clean(self):
-        dataA = self.cleaned_data['srcAccount']  
-        dataB = self.cleaned_data['dstAccount']  
-        if (dataA == None) and (dataB == None):
-            raise forms.ValidationError('Missing src or dst account')
-        return self.cleaned_data

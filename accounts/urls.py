@@ -7,7 +7,7 @@ urlpatterns = patterns('accounts.views',
     (r'^edit/(?P<account_id>\d+)/$', 'edit_account'),
     (r'^create/$', 'create_account'),
     (r'^update/(?P<account_id>\d+)/$', 'update_balance'),
-    (r'^transaction/$', 'transaction_show_all'),
-    (r'^transaction/create/$', 'transaction_create'),
+    (r'^transaction/(?P<account_id>\d+)/$', 'transaction_show_all'),
+    (r'^transaction/(?P<account_id>\d+)/create/$', 'transaction_create'),
 
 )
