@@ -23,5 +23,14 @@ class Account(BaseModel):
 
     def setChange(self):
         self.change_date = datetime.datetime.utcnow()
+
+
+class Transaction(BaseModel):
+    srcAccount = db.ReferenceProperty(Account, collection_name="srcTransaction_set")
+    dstAccount = db.ReferenceProperty(Account, collection_name="dstTransaction_set")
+    amount = db.IntegerProperty()
+    date = db.DateTimeProperty() 
+    desc = db.StringProperty(); 
+    
                  
 

@@ -66,3 +66,8 @@ def edit_account(request, account_id):
         form = AccountForm(instance=account)
     return render_to_response('accounts/edit_account.html', { 'form': form , 'request':request})  
 
+def transaction_show_all(request):
+    return render_to_response('accounts/transacion_show_all.html', { 'request': request })
+
+def transaction_create(request):
+    return render_to_response('accounts/transacion_create.html', { 'request': request })
