@@ -10,7 +10,7 @@ class Account(BaseModel):
     recount_date = db.DateTimeProperty('last recount') 
     change_date = db.DateTimeProperty('date changed')
     def __unicode__(self):
-       return self.question
+       return self.name
 
 
     def updateBalance(self):
@@ -29,8 +29,11 @@ class Transaction(BaseModel):
     srcAccount = db.ReferenceProperty(Account, collection_name="srcTransaction_set")
     dstAccount = db.ReferenceProperty(Account, collection_name="dstTransaction_set")
     amount = db.IntegerProperty()
-    date = db.DateTimeProperty() 
+    create_date = db.DateTimeProperty() 
     desc = db.StringProperty(); 
-    
+    def setDate(self):
+        self.create_date = datetime.datetime.utcnow()
+
+   
                  
 

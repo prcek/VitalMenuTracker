@@ -1,6 +1,6 @@
 from django import forms
 #from google.appengine.ext.db.djangoforms import forms
-from accounts.models import Account
+from accounts.models import Account,Transaction
 
 class AccountForm(forms.ModelForm):
     class Meta:
@@ -12,3 +12,22 @@ class AccountForm(forms.ModelForm):
         if len(data)==0:
             raise forms.ValidationError('missing value')
         return data
+
+
+class TransactionForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        exclude = ('create_date')
+
+    def clean_amount(self):
+        data = self.cleaned_data['amount']
+        if data<=0:
+            raise forms.ValidationError('wrong value (<=0)')
+        return data
+
+    def clean(self):
+        dataA = self.cleaned_data['srcAccount']  
+        dataB = self.cleaned_data['dstAccount']  
+        if (dataA == None) and (dataB == None):
+            raise forms.ValidationError('Missing src or dst account')
+        return self.cleaned_data

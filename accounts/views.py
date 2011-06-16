@@ -1,6 +1,6 @@
 # Create your views here.
-from accounts.models import Account
-from accounts.forms import AccountForm
+from accounts.models import Account,Transaction
+from accounts.forms import AccountForm,TransactionForm
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template import Context, loader
@@ -15,7 +15,7 @@ def index(request):
     return redirect('/accounts/show')
 
 def show_all(request):
-    account_list = Account.objects.all().fetch(10)
+    account_list = Account.objects.all().fetch(100)
     t = loader.get_template('accounts/show_all.html')
     c = Context({'account_list': account_list,'request':request})
     return HttpResponse(t.render(c))
@@ -67,7 +67,19 @@ def edit_account(request, account_id):
     return render_to_response('accounts/edit_account.html', { 'form': form , 'request':request})  
 
 def transaction_show_all(request):
-    return render_to_response('accounts/transacion_show_all.html', { 'request': request })
+    transaction_list = Transaction.objects.all().fetch(100)
+    return render_to_response('accounts/transaction_show_all.html', { 'request': request , 'transaction_list': transaction_list})
 
 def transaction_create(request):
-    return render_to_response('accounts/transacion_create.html', { 'request': request })
+    if request.method == 'POST':
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.setDate()
+            transaction.save()
+            logging.info('new transaction created - id: %s key: %s data: %s' % (transaction.key().id() , transaction.key(), transaction))
+            return redirect('/accounts/transaction/')
+    else:
+        form = TransactionForm() 
+
+    return render_to_response('accounts/transaction_create.html', { 'request': request, 'form':form })
