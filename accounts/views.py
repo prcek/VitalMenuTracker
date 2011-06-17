@@ -63,8 +63,11 @@ def account_edit(request, account_id):
     return render_to_response('accounts/edit.html', { 'form': form , 'request':request})  
 
 def transaction_list(request, account_id):
-    transaction_list = Transaction.objects.all().fetch(100)
-    return render_to_response('accounts/transaction_list.html', { 'request': request , 'transaction_list': transaction_list})
+    account = Account.get_by_id(int(account_id))
+    if account is None:
+        raise Http404
+    transaction_list = Transaction.objects.all().ancestor(account).order('-create_date').fetch(100)
+    return render_to_response('accounts/transaction_list.html', { 'request': request , 'transaction_list': transaction_list, 'account': account})
 
 def transaction_create(request, account_id):
     account = Account.get_by_id(int(account_id))

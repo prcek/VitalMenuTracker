@@ -8,9 +8,9 @@
 
 {% if account_list %}
     <table>
-    <tr><th>name</th><th>balance</th><th>last change</th><th>recount date</th><th>actions</th></tr>
+    <tr><th>name</th><th>balance</th><th>last change</th><th>actions</th></tr>
     {% for account in account_list %}
-        <tr><td>{{account.name}}</td><td>{{account.balance}}</td><td>{{account.last_change}}</td><td>{{account.recount_date}}</td><td><a class='button' href='{{account.key.id}}/'>show</a>&nbsp;<a class='button' href='{{account.key.id}}/edit/'>edit</a>&nbsp;<a class='button' href='{{account.key.id}}/transactions/'>transactions</a></td></tr>
+        <tr><td>{{account.name}}</td><td>{{account.balance}}</td><td>{{account.last_change}}</td><td><a class='button' href='{{account.key.id}}/'>show</a>&nbsp;<a class='button' href='{{account.key.id}}/edit/'>edit</a>&nbsp;<a class='button' href='{{account.key.id}}/transactions/'>transactions</a></td></tr>
     {% endfor %}
     </table>
 {% else %}

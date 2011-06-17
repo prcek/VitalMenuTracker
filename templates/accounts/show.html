@@ -4,7 +4,7 @@
 {% block content %}
 
 {% if account %}
-    {{ account.name }} {{ account.balance }} {{ account.key.id }}  {{ account.key }}
+    {% include "accounts/account.html" %}
 {% else %}
     not found
 {% endif %}
