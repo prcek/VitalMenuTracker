@@ -11,32 +11,28 @@ import logging
 def goHome(request):
     return redirect('/accounts/show')
 
-def index(request):
-    return redirect('/accounts/show')
+#def index(request):
+#    return redirect('/accounts/show')
 
-def show_all(request):
+def account_list(request):
     account_list = Account.objects.all().fetch(100)
-    t = loader.get_template('accounts/show_all.html')
-    c = Context({'account_list': account_list,'request':request})
-    return HttpResponse(t.render(c))
+    return render_to_response('accounts/list.html', { 'request':request , 'account_list': account_list})
 
-def show_account(request,account_id):
+def account_show(request,account_id):
     account = Account.get_by_id(int(account_id))
     if account is None:
         raise Http404
-    t = loader.get_template('accounts/show_account.html')
-    c = Context({'account': account, 'request':request})
-    return HttpResponse(t.render(c))
+    return render_to_response('accounts/show.html', { 'request':request , 'account': account })
 
-def update_balance(request, account_id):
-    account = Account.get_by_id(int(account_id))
-    if account is None:
-        raise Http404
-    account.updateBalance()
-    account.save()
-    return HttpResponse("OK")
+#def update_balance(request, account_id):
+#    account = Account.get_by_id(int(account_id))
+#    if account is None:
+#        raise Http404
+#    account.updateBalance()
+#    account.save()
+#    return HttpResponse("OK")
 
-def create_account(request):
+def account_create(request):
     if request.method == 'POST':
         form = AccountForm(request.POST)
         if form.is_valid():
@@ -45,12 +41,12 @@ def create_account(request):
             account.setChange()
             account.save()
             logging.info('new account created - id: %s key: %s data: %s' % (account.key().id() , account.key(), account))
-            return redirect('/accounts/show')
+            return redirect('/accounts/')
     else:
         form = AccountForm() 
-    return render_to_response('accounts/create_account.html', { 'form': form, 'request':request })
+    return render_to_response('accounts/create.html', { 'form': form, 'request':request })
 
-def edit_account(request, account_id):
+def account_edit(request, account_id):
     account = Account.get_by_id(int(account_id))
     if account is None:
         raise Http404
@@ -61,14 +57,14 @@ def edit_account(request, account_id):
             form.save(commit=False)
             logging.info('edit account after - id: %s key: %s data: %s' % (account.key().id() , account.key(), account))
             account.save()
-            return redirect('/accounts/show')
+            return redirect('/accounts/')
     else:
         form = AccountForm(instance=account)
-    return render_to_response('accounts/edit_account.html', { 'form': form , 'request':request})  
+    return render_to_response('accounts/edit.html', { 'form': form , 'request':request})  
 
-def transaction_show_all(request, account_id):
+def transaction_list(request, account_id):
     transaction_list = Transaction.objects.all().fetch(100)
-    return render_to_response('accounts/transaction_show_all.html', { 'request': request , 'transaction_list': transaction_list})
+    return render_to_response('accounts/transaction_list.html', { 'request': request , 'transaction_list': transaction_list})
 
 def transaction_create(request, account_id):
     account = Account.get_by_id(int(account_id))
@@ -83,8 +79,10 @@ def transaction_create(request, account_id):
             t.setDate()
             t.save()
             logging.info('new transaction created - id: %s key: %s data: %s' % (t.key().id() , t.key(), t))
-            return redirect('/accounts/transaction/'+account_id+'/')
+            return redirect('/accounts/'+account_id+'/transactions/')
     else:
         form = TransactionForm() 
 
     return render_to_response('accounts/transaction_create.html', { 'request': request, 'form':form })
+
+

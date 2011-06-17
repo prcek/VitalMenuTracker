@@ -2,10 +2,7 @@
 app_menu = [ 
     {'name':'accounts', 'url':'/accounts/',
      'submenu': [ 
-                    { 'name':'all', 'url':'/accounts/show/' },
-                    { 'name':'create', 'url':'/accounts/create/' },
-                    { 'name':'transaction list', 'url':'/accounts/transaction/' },
-                    { 'name':'transaction create', 'url':'/accounts/transaction/create/' }
+                    { 'name':'list', 'url':'/accounts/' },
                 ]
     },
     {'name':'emails', 'url':'/emails/' ,

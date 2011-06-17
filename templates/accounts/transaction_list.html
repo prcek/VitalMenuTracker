@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} transaction list {% endblock %}
+
+{% block content %}
+
+{% if transaction_list %}
+    <table>
+    <tr><th>date</th><th>from/to</td><th>desc</th><th>amount</th><th>actions</th></tr>
+    {% for t in transaction_list %}
+        <tr><td>{{t.create_date}}</td><td>{{t.counterAccount}}</td><td>{{t.desc}}</td><td>{{t.amount}}</td><td><a class='button' href='{{t.key.id}}/'>show</a>&nbsp;<a class='button' href='{{t.key.id}}/edit/'>edit</a></td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no transaction
+{% endif %}
+    <a class='button' href='create/'>create</a>
+    <a class='button' href=''>reload</a>
+{% endblock %}
+

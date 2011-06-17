@@ -15,12 +15,12 @@ class Account(BaseModel):
        return self.name
 
 
-    def updateBalance(self):
-        if self.balance is None:
-            self.balance = 0
-        else:
-            self.balance = self.balance + 1
-            self.recount_date = datetime.datetime.utcnow()
+#    def updateBalance(self):
+#        if self.balance is None:
+#            self.balance = 0
+#        else:
+#            self.balance = self.balance + 1
+#            self.recount_date = datetime.datetime.utcnow()
 
 
     def setChange(self):

@@ -1,13 +1,11 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('accounts.views',
-    (r'^$', 'index'),
-    (r'^show/$', 'show_all'),
-    (r'^show/(?P<account_id>\d+)/$', 'show_account'),
-    (r'^edit/(?P<account_id>\d+)/$', 'edit_account'),
-    (r'^create/$', 'create_account'),
-    (r'^update/(?P<account_id>\d+)/$', 'update_balance'),
-    (r'^transaction/(?P<account_id>\d+)/$', 'transaction_show_all'),
-    (r'^transaction/(?P<account_id>\d+)/create/$', 'transaction_create'),
-
+    (r'^$', 'account_list'),
+    (r'^create/$', 'account_create'),
+    (r'^(?P<account_id>\d+)/$', 'account_show'),
+    (r'^(?P<account_id>\d+)/edit/$', 'account_edit'),
+    (r'^(?P<account_id>\d+)/transactions/$', 'transaction_list'),
+#    (r'^(?P<account_id>\d+)/transactions/(?P<transaction_id>\d+)/$', 'transaction_show'),
+    (r'^(?P<account_id>\d+)/transactions/create/$', 'transaction_create'),
 )
