@@ -9,7 +9,7 @@ from django.template import Context, loader
 import logging
 
 def goHome(request):
-    return redirect('/accounts/show')
+    return redirect('/accounts/')
 
 #def index(request):
 #    return redirect('/accounts/show')
