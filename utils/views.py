@@ -10,6 +10,7 @@ import os
 from google.appengine.api import users
 
 from emails.models import EMailList
+from utils.decorators import user_required, admin_required
 
 
 def index(request):
@@ -60,6 +61,7 @@ def emailFilter(request):
         result = ''
     return render_to_response('utils/emailFilter.html', { 'request':request, 'form': form , 'result': result})
 
+@admin_required
 def showEnv(request):
     env = os.environ
     env['DJANGO_VERSION'] = django.get_version()
@@ -67,7 +69,6 @@ def showEnv(request):
 
 def showHelp(request):
     return render_to_response('utils/showHelp.html', {  'request':request,  })
-
 
 def showUser(request):
     info = "info about user:"
