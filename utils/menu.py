@@ -17,6 +17,7 @@ app_menu = [
                     { 'name':'filter', 'url':'/utils/email/' },
                     { 'name':'env', 'url':'/utils/env/', 'access':'u' },
                     { 'name':'user', 'url':'/utils/user/', 'access':'u' },
+                    { 'name':'users', 'url':'/utils/users/', 'access':'a' },
                     { 'name':'help', 'url':'/utils/help/', 'access':'u' },
                 ]
     },

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %} users list {% endblock %}
+
+
+{% block content %}
+
+{% if user_list %}
+    <table>
+    <tr><th>active</th><th>name</th><th>email</th><th>power</th><th>actions</th></tr>
+    {% for user in user_list %}
+        <tr><td>{{user.active}}</td><td>{{user.name}}</td><td>{{user.email}}</td><td>{{user.power}}</td><td><a class='button' href='{{user.key.id}}/'>show</a>&nbsp;<a class='button' href='{{user.key.id}}/edit/'>edit</a></td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no user<br>
+{% endif %}
+    <a class='button' href='create/'>create</a>
+    <a class='button' href=''>reload</a>
+{% endblock %}
+

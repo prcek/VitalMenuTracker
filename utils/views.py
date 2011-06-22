@@ -10,11 +10,20 @@ import os
 from google.appengine.api import users
 
 from emails.models import EMailList
+from utils.models import User
 from utils.decorators import user_required, admin_required
 
+import logging
 
 def index(request):
     return redirect('/utils/email')
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ( 'active', 'name','email','power' )
+
+
 
 class EmailListForm(forms.Form):
     emails = forms.CharField(widget=forms.Textarea(attrs={'cols':160, 'rows':20}), required=False, label="Text s emaily")
@@ -86,4 +95,46 @@ def showUser(request):
         email = user.email()
         user_id = user.user_id()
     return render_to_response('utils/showUser.html', { 'auth': auth,  'user_id': user_id, 'nickname': nickname, 'email':email, 'admin': admin, 'login_url':users.create_login_url(base_uri), 'logout_url': users.create_logout_url(base_uri), 'request':request,  })
+
+
+def user_list(request):
+    list = User.objects.all().fetch(100)
+    return render_to_response('utils/user_list.html', { 'request':request, 'user_list':list })
+
+def user_show(request,user_id):
+    user = User.get_by_id(int(user_id))
+    if user is None:
+        raise Http404
+    return render_to_response('utils/user_show.html', { 'request':request , 'user': user })
+
+def user_create(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            logging.info('form data' + form.cleaned_data['name'])
+            user  = form.save(commit=False)
+            user.save()
+            logging.info('new user created - id: %s key: %s data: %s' % (user.key().id() , user.key(), user))
+            return redirect('/utils/users/')
+    else:
+        form = UserForm() 
+    return render_to_response('utils/user_create.html', { 'form': form, 'request':request })
+
+def user_edit(request, user_id):
+    user = User.get_by_id(int(user_id))
+    if user is None:
+        raise Http404
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            logging.info('edit user before - id: %s key: %s data: %s' % (user.key().id() , user.key(), user))
+            form.save(commit=False)
+            logging.info('edit user after - id: %s key: %s data: %s' % (user.key().id() , user.key(), user))
+            user.save()
+            return redirect('/utils/users/')
+    else:
+        form = UserForm(instance=user)
+    return render_to_response('utils/user_edit.html', { 'form': form , 'request':request})  
+
+
 

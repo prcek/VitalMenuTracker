@@ -6,8 +6,8 @@ from google.appengine.api import users
 
 register = template.Library()
 
-
-
+def isAuthFor(userS,actionS):
+    return False
 
 class RenderMenuNode(template.Node):
     def __init__(self):
@@ -15,7 +15,8 @@ class RenderMenuNode(template.Node):
     def render(self, context):
         t = template.loader.get_template('menu.html')
         current_menu = menu.app_menu; 
-
+        
+        
 
 
         if 'request' in context:
@@ -39,6 +40,15 @@ class RenderMenuNode(template.Node):
                 else:
                     m['active']=0
 
+        for m in current_menu:
+            if 'access' in m:
+                pass
+            if 'submenu' in m:
+                for s in m['submenu']:
+                    if 'access' in s:
+                        pass
+                
+
         return t.render(template.Context({'menu':current_menu}))
 
 @register.tag
@@ -58,7 +68,8 @@ class RenderUserNode(template.Node):
             base_uri = ""
 
         auth = False
-        admin =  False
+        admin_user =  False
+        power_user = False
         username = ""
         user = users.get_current_user()
         logout_url = users.create_logout_url(base_uri);
@@ -66,8 +77,8 @@ class RenderUserNode(template.Node):
         if user:
             username = user.nickname()
             auth = True
-            admin = users.is_current_user_admin()
-        return t.render(template.Context({'username':username, 'auth':auth, 'login_url':login_url, 'logout_url':logout_url, 'admin':admin}))
+            admin_user = users.is_current_user_admin()
+        return t.render(template.Context({'username':username, 'auth':auth, 'login_url':login_url, 'logout_url':logout_url, 'admin':admin_user, 'power':power_user}))
 
 @register.tag
 def render_user(parser, token):
