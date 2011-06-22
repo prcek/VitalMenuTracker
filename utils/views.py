@@ -97,16 +97,19 @@ def showUser(request):
     return render_to_response('utils/showUser.html', { 'auth': auth,  'user_id': user_id, 'nickname': nickname, 'email':email, 'admin': admin, 'login_url':users.create_login_url(base_uri), 'logout_url': users.create_logout_url(base_uri), 'request':request,  })
 
 
+@admin_required
 def user_list(request):
     list = User.objects.all().fetch(100)
     return render_to_response('utils/user_list.html', { 'request':request, 'user_list':list })
 
+@admin_required
 def user_show(request,user_id):
     user = User.get_by_id(int(user_id))
     if user is None:
         raise Http404
     return render_to_response('utils/user_show.html', { 'request':request , 'user': user })
 
+@admin_required
 def user_create(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -120,6 +123,7 @@ def user_create(request):
         form = UserForm() 
     return render_to_response('utils/user_create.html', { 'form': form, 'request':request })
 
+@admin_required
 def user_edit(request, user_id):
     user = User.get_by_id(int(user_id))
     if user is None:
@@ -135,6 +139,5 @@ def user_edit(request, user_id):
     else:
         form = UserForm(instance=user)
     return render_to_response('utils/user_edit.html', { 'form': form , 'request':request})  
-
 
 

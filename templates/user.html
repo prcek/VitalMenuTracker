@@ -12,6 +12,9 @@
         <span class="separator">|</span>
         <span> <a href="/utils/help/"><strong>help</strong></a> </span>
     {% else %}
+        {% if wrong %}
+            <span><strong>WRONG</strong></span>
+        {% endif %}
         <span> <a href="{{ login_url }}"><strong>login</strong></a> </span>
         <span class="separator">|</span>
         <span> <a href="/utils/help/"><strong>help</strong></a> </span>
