@@ -3,7 +3,7 @@ from accounts.models import Account,Transaction
 from accounts.forms import AccountForm,TransactionForm
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.template import Context, loader
+from django.template import RequestContext,Context, loader
 
 
 import logging
@@ -16,13 +16,13 @@ def goHome(request):
 
 def account_list(request):
     account_list = Account.objects.all().fetch(100)
-    return render_to_response('accounts/list.html', { 'request':request , 'account_list': account_list})
+    return render_to_response('accounts/list.html', RequestContext(request, { 'account_list': account_list}))
 
 def account_show(request,account_id):
     account = Account.get_by_id(int(account_id))
     if account is None:
         raise Http404
-    return render_to_response('accounts/show.html', { 'request':request , 'account': account })
+    return render_to_response('accounts/show.html', RequestContext( request, { 'account': account }))
 
 #def update_balance(request, account_id):
 #    account = Account.get_by_id(int(account_id))
