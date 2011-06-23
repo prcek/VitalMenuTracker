@@ -2,21 +2,25 @@
         <div id="top-tabs">
             <ul>
             {% for m in menu %}
+                {% if not m.hide %}
                 <li {% if m.active %}class="active"{% endif %}><a href="{{ m.url }}">{{ m.name }}</a></li>
+                {% endif %}
             {% endfor %}
             </ul>&nbsp;
             <div class="clear"></div>
         </div>
         
         {% for m in menu %}
-            {% if m.active and m.submenu %}
+            {% if m.active and m.submenu and not m.hide %}
                 <div id="sub-tabs">
                     <ul>
                     {% for s in m.submenu %}
-                        {% if not forloop.first %}
-                        <li class="separator">|</li>
+                        {% if not s.hide %}
+                            {% if not forloop.first %}
+                            <li class="separator">|</li>
+                            {% endif %}
+                            <li {% if s.active %}class="active"{% endif %}><a href="{{ s.url }}">{{ s.name }}</a></li>
                         {% endif %}
-                        <li {% if s.active %}class="active"{% endif %}><a href="{{ s.url }}">{{ s.name }}</a></li>
                     {% endfor %}
                     </ul>
                     <div class="clear"></div>
