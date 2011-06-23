@@ -19,6 +19,7 @@ app_menu = [
                     { 'name':'user', 'url':'/utils/user/', 'access':'u' },
                     { 'name':'users', 'url':'/utils/users/', 'access':'a' },
                     { 'name':'help', 'url':'/utils/help/', 'access':'u' },
+                    { 'name':'debug', 'url':'/utils/debug/'  },
                 ]
     },
  ]

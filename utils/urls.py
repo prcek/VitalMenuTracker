@@ -10,5 +10,6 @@ urlpatterns = patterns('utils.views',
     (r'^users/(?P<user_id>\d+)/$', 'user_show'),
     (r'^users/(?P<user_id>\d+)/edit/$', 'user_edit'),
     (r'^help/$', 'showHelp'),
+    (r'^debug/$', 'debugTest'),
 )
 

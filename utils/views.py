@@ -141,3 +141,9 @@ def user_edit(request, user_id):
     return render_to_response('utils/user_edit.html', { 'form': form , 'request':request})  
 
 
+def debugTest(request):
+    if request.auth:
+        debug = 'auth ok'
+    else:
+        debug = 'neni'
+    return HttpResponse(debug)
