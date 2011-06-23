@@ -1,7 +1,7 @@
 # Create your views here.
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.template import Context, loader
+from django.template import RequestContext, Context, loader
 #from google.appengine.ext.db.djangoforms import forms
 from django import forms
 import re
@@ -21,13 +21,13 @@ class EMailGroupForm(forms.Form):
 
 def emailGroups(request):
     emaillists = EMailList.objects.all().fetch(10)
-    return render_to_response('emails/emailGroups.html', { 'emaillists': emaillists, 'request':request })
+    return render_to_response('emails/emailGroups.html', RequestContext(request, { 'emaillists': emaillists}))
 
 def emailGroupShow(request, emailGroupId):
     el = EMailList.get_by_id(int(emailGroupId))
     if el  is None:
         raise Http404
-    return render_to_response('emails/emailGroup.html', {'request':request,  'el': el})
+    return render_to_response('emails/emailGroup.html', RequestContext(request, { 'el': el}))
 
 def emailGroupEdit(request, emailGroupId):
     el = EMailList.get_by_id(int(emailGroupId))
@@ -45,7 +45,7 @@ def emailGroupEdit(request, emailGroupId):
     else:
         data = {'name':el.name, 'desc':el.desc, 'emails':el.emailsAsString()}
         form = EMailGroupForm(data)
-    return render_to_response('emails/emailGroup.html', { 'request':request, 'form' : form})
+    return render_to_response('emails/emailGroup.html', RequestContext(request, { 'form' : form}))
 
 def emailGroupCreate(request):
     if request.method == 'POST':
@@ -60,6 +60,6 @@ def emailGroupCreate(request):
     else:
         form = EMailGroupForm()
  
-    return render_to_response('emails/emailGroup.html', { 'form' : form, 'request':request })
+    return render_to_response('emails/emailGroup.html', RequestContext(request, { 'form' : form }))
 
 

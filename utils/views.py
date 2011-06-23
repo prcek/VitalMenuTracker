@@ -1,7 +1,7 @@
 # Create your views here.
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.template import Context, loader
+from django.template import RequestContext, Context, loader
 #from google.appengine.ext.db.djangoforms import forms
 from django import forms
 import re
@@ -68,16 +68,16 @@ def emailFilter(request):
     else:
         form = EmailListForm()
         result = ''
-    return render_to_response('utils/emailFilter.html', { 'request':request, 'form': form , 'result': result})
+    return render_to_response('utils/emailFilter.html', RequestContext(request, { 'form': form , 'result': result}))
 
 @admin_required
 def showEnv(request):
     env = os.environ
     env['DJANGO_VERSION'] = django.get_version()
-    return render_to_response('utils/showEnv.html', { 'request':request, 'env':env })
+    return render_to_response('utils/showEnv.html', RequestContext(request, { 'env':env }))
 
 def showHelp(request):
-    return render_to_response('utils/showHelp.html', {  'request':request,  })
+    return render_to_response('utils/showHelp.html', RequestContext(request, {   }))
 
 def showUser(request):
     info = "info about user:"
@@ -94,20 +94,20 @@ def showUser(request):
         nickname = user.nickname()
         email = user.email()
         user_id = user.user_id()
-    return render_to_response('utils/showUser.html', { 'auth': auth,  'user_id': user_id, 'nickname': nickname, 'email':email, 'admin': admin, 'login_url':users.create_login_url(base_uri), 'logout_url': users.create_logout_url(base_uri), 'request':request,  })
+    return render_to_response('utils/showUser.html', RequestContext(request, { 'auth': auth,  'user_id': user_id, 'nickname': nickname, 'email':email, 'admin': admin, 'login_url':users.create_login_url(base_uri), 'logout_url': users.create_logout_url(base_uri), }))
 
 
 @admin_required
 def user_list(request):
     list = User.objects.all().fetch(100)
-    return render_to_response('utils/user_list.html', { 'request':request, 'user_list':list })
+    return render_to_response('utils/user_list.html', RequestContext(request, { 'user_list':list }))
 
 @admin_required
 def user_show(request,user_id):
     user = User.get_by_id(int(user_id))
     if user is None:
         raise Http404
-    return render_to_response('utils/user_show.html', { 'request':request , 'user': user })
+    return render_to_response('utils/user_show.html', RequestContext(request, { 'user': user }))
 
 @admin_required
 def user_create(request):
@@ -121,7 +121,7 @@ def user_create(request):
             return redirect('/utils/users/')
     else:
         form = UserForm() 
-    return render_to_response('utils/user_create.html', { 'form': form, 'request':request })
+    return render_to_response('utils/user_create.html', RequestContext(request, { 'form': form }))
 
 @admin_required
 def user_edit(request, user_id):
@@ -138,7 +138,7 @@ def user_edit(request, user_id):
             return redirect('/utils/users/')
     else:
         form = UserForm(instance=user)
-    return render_to_response('utils/user_edit.html', { 'form': form , 'request':request})  
+    return render_to_response('utils/user_edit.html', RequestContext(request, { 'form': form }) ) 
 
 
 def debugTest(request):

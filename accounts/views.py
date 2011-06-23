@@ -44,7 +44,7 @@ def account_create(request):
             return redirect('/accounts/')
     else:
         form = AccountForm() 
-    return render_to_response('accounts/create.html', { 'form': form, 'request':request })
+    return render_to_response('accounts/create.html', RequestContext(request, { 'form': form }))
 
 def account_edit(request, account_id):
     account = Account.get_by_id(int(account_id))
@@ -60,14 +60,14 @@ def account_edit(request, account_id):
             return redirect('/accounts/')
     else:
         form = AccountForm(instance=account)
-    return render_to_response('accounts/edit.html', { 'form': form , 'request':request})  
+    return render_to_response('accounts/edit.html', RequestContext(request, { 'form': form }))  
 
 def transaction_list(request, account_id):
     account = Account.get_by_id(int(account_id))
     if account is None:
         raise Http404
     transaction_list = Transaction.objects.all().ancestor(account).order('-create_date').fetch(100)
-    return render_to_response('accounts/transaction_list.html', { 'request': request , 'transaction_list': transaction_list, 'account': account})
+    return render_to_response('accounts/transaction_list.html', RequestContext(request,{ 'transaction_list': transaction_list, 'account': account}))
 
 def transaction_create(request, account_id):
     account = Account.get_by_id(int(account_id))
@@ -86,6 +86,6 @@ def transaction_create(request, account_id):
     else:
         form = TransactionForm() 
 
-    return render_to_response('accounts/transaction_create.html', { 'request': request, 'form':form })
+    return render_to_response('accounts/transaction_create.html', RequestContext(request, { 'form':form }))
 
 
