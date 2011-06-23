@@ -109,7 +109,7 @@ INSTALLED_APPS = (
      'accounts',
      'emails',
      'utils',
-     'utils.templatetags',
+#     'utils.templatetags',
 #    'django.contrib.auth',
 #    'django.contrib.contenttypes',
 #    'django.contrib.sessions',
