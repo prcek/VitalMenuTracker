@@ -23,12 +23,13 @@ def pdftest(text=None):
    # pdfmetrics.registerFont(pdfmetrics.Font(
    #         'DarkGardenMK', 'DarkGardenMK', 'WinAnsiEncoding'))
 
-    pdfmetrics.registerFont(TTFont('Vera', os.path.join(folderFonts,'Vera.ttf')))
+   # pdfmetrics.registerFont(TTFont('Vera', os.path.join(folderFonts,'Vera.ttf')))
+    pdfmetrics.registerFont(TTFont('DejaVuSansMono', os.path.join(folderFonts,'DejaVuSansMono.ttf')))
 
 
     c = canvas.Canvas(output)    
     #c.setFont('DarkGardenMK', 16)
-    c.setFont('Vera', 16)
+    c.setFont('DejaVuSansMono', 16)
     if text:
         c.drawString(100,100,text)
     else:
