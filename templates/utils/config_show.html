@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+{% if config %}
+    {% include "utils/config.html" %}
+{% else %}
+    not found
+{% endif %}
+
+{% endblock %}
+

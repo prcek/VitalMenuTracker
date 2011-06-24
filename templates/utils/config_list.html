@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %} config list {% endblock %}
+
+
+{% block content %}
+
+{% if config_list %}
+    <table>
+    <tr><th>active</th><th>name</th><th>value</th><th>actions</th></tr>
+    {% for config in config_list %}
+        <tr><td>{{config.active}}</td><td>{{config.name}}</td><td>{{config.value}}</td><td><a class='button' href='{{config.key.id}}/'>show</a>&nbsp;<a class='button' href='{{config.key.id}}/edit/'>edit</a></td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no config<br>
+{% endif %}
+    <a class='button' href='create/'>create</a>
+    <a class='button' href=''>reload</a>
+{% endblock %}
+
