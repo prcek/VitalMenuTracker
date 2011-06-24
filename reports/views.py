@@ -18,7 +18,7 @@ def index(request):
 @cron_required
 def cron_test(request):
     logging.info('cron test')
-    send_mail_to_admins('test report','this is test report')
+#    send_mail_to_admins('test report','this is test report')
     if request.cron_request:
         logging.info('HttpResponse ok')
         return HttpResponse('ok')
@@ -27,6 +27,7 @@ def cron_test(request):
 @cron_required
 def cron_daily(request):
     logging.info('cron daily')
+    send_mail_to_admins('test report','this is test report')
     if request.cron_request:
         logging.info('HttpResponse ok')
         return HttpResponse('ok')

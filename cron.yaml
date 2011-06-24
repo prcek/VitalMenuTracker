@@ -2,8 +2,10 @@ cron:
 - description: test report
   url: /cron_jobs/report_test/
   schedule: every 5 minutes synchronized
+  timezone: Europe/Prague
 
 - description: daily report 
   url: /cron_jobs/report_daily/
-  schedule: every day 01:00
+  schedule: every mon,tue,wed,thu,fri 07:00
+  timezone: Europe/Prague
 
