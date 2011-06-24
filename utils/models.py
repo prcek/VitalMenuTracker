@@ -12,5 +12,10 @@ class User(BaseModel):
     power = db.BooleanProperty()
     def __unicode__(self):
        return self.email
-   
+
+class Config(BaseModel):
+    active = db.BooleanProperty()
+    name = db.StringProperty()
+    value = db.StringProperty()
+        
 

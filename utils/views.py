@@ -10,7 +10,7 @@ import os
 from google.appengine.api import users
 
 from emails.models import EMailList
-from utils.models import User
+from utils.models import User, Config
 from utils.decorators import user_required, admin_required
 
 import logging
@@ -22,6 +22,12 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ( 'active', 'name','email','power' )
+
+class ConfigForm(forms.ModelForm):
+    class Meta:
+        model = Config
+        fields = ( 'active', 'name','value' )
+
 
 
 
@@ -140,9 +146,53 @@ def user_edit(request, user_id):
         form = UserForm(instance=user)
     return render_to_response('utils/user_edit.html', RequestContext(request, { 'form': form }) ) 
 
+@admin_required
+def config_list(request):
+    list = Config.objects.all().fetch(100)
+    return render_to_response('utils/config_list.html', RequestContext(request, { 'config_list':list }))
+
+@admin_required
+def config_show(request,config_id):
+    config = Config.get_by_id(int(config_id))
+    if config is None:
+        raise Http404
+    return render_to_response('utils/config_show.html', RequestContext(request, { 'config': config }))
+
+@admin_required
+def config_create(request):
+    if request.method == 'POST':
+        form = ConfigForm(request.POST)
+        if form.is_valid():
+            logging.info('form data' + form.cleaned_data['name'])
+            config  = form.save(commit=False)
+            config.save()
+            logging.info('new config created - id: %s key: %s data: %s' % (config.key().id() , config.key(), config))
+            return redirect('/utils/config/')
+    else:
+        form = ConfigForm() 
+    return render_to_response('utils/config_create.html', RequestContext(request, { 'form': form }))
+
+@admin_required
+def config_edit(request, config_id):
+    config = Config.get_by_id(int(config_id))
+    if config is None:
+        raise Http404
+    if request.method == 'POST':
+        form = ConfigForm(request.POST, instance=config)
+        if form.is_valid():
+            logging.info('edit config before - id: %s key: %s data: %s' % (config.key().id() , config.key(), config))
+            form.save(commit=False)
+            logging.info('edit config after - id: %s key: %s data: %s' % (config.key().id() , config.key(), config))
+            config.save()
+            return redirect('/utils/config/')
+    else:
+        form = ConfigForm(instance=config)
+    return render_to_response('utils/config_edit.html', RequestContext(request, { 'form': form }) ) 
+
+
 
 def debugTest(request):
-    if request.auth:
+    if request.auth_info.auth:
         debug = 'auth ok'
     else:
         debug = 'neni'

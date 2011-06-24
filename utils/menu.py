@@ -18,6 +18,7 @@ app_menu = [
                     { 'name':'env', 'url':'/utils/env/', 'access':'u' },
                     { 'name':'user', 'url':'/utils/user/', 'access':'u' },
                     { 'name':'users', 'url':'/utils/users/', 'access':'a' },
+                    { 'name':'config', 'url':'/utils/config/', 'access':'a' },
                     { 'name':'help', 'url':'/utils/help/', 'access':'u' },
                     { 'name':'debug', 'url':'/utils/debug/', 'access':'p'  },
                 ]
