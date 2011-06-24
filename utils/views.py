@@ -190,9 +190,17 @@ def config_edit(request, config_id):
     return render_to_response('utils/config_edit.html', RequestContext(request, { 'form': form }) ) 
 
 
+def pdf_test(request):
+    from utils.pdf import pdftest
+    from utils.config import getConfig
+    pdf = pdftest(getConfig('PDF_TEST_TEXT'))
+    r =  HttpResponse(pdf,mimetype='application/pdf')
+    r['Content-Disposition'] = 'attachment; filename=pdf_test.pdf'
+    return r
+
 
 def debugTest(request):
     debug = ''
-    from config import getConfig
-    debug = getConfig('key','val')
+    from utils.pdf import pdftest
+    pdftest()
     return HttpResponse(debug)
