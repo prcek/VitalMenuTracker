@@ -192,11 +192,7 @@ def config_edit(request, config_id):
 
 
 def debugTest(request):
-    for i in request.META:
-        logging.info(i)
-
-    if request.auth_info.auth:
-        debug = 'auth ok'
-    else:
-        debug = 'neni'
+    debug = ''
+    from config import getConfig
+    debug = getConfig('key','val')
     return HttpResponse(debug)

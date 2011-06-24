@@ -6,6 +6,8 @@ from django.template import RequestContext,Context, loader
 from utils.decorators import user_required, power_required, admin_required, cron_required
 
 
+from utils.mail import send_mail_to_admins
+
 
 import logging
 
@@ -16,6 +18,7 @@ def index(request):
 @cron_required
 def cron_test(request):
     logging.info('cron test')
+    send_mail_to_admins('test report','this is test report')
     if request.cron_request:
         logging.info('HttpResponse ok')
         return HttpResponse('ok')
