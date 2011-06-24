@@ -17,14 +17,16 @@ def index(request):
 def cron_test(request):
     logging.info('cron test')
     if request.cron_request:
-        return HttpReponse('ok')
+        logging.info('HttpResponse ok')
+        return HttpResponse('ok')
     return render_to_response('reports/cron.html', RequestContext(request))
 
 @cron_required
 def cron_daily(request):
     logging.info('cron daily')
     if request.cron_request:
-        return HttpReponse('ok')
+        logging.info('HttpResponse ok')
+        return HttpResponse('ok')
     return render_to_response('reports/cron.html', RequestContext(request))
 
 
