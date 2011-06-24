@@ -23,5 +23,14 @@ app_menu = [
                     { 'name':'debug', 'url':'/utils/debug/', 'access':'p'  },
                 ]
     },
+
+    {'name':'reports', 'url':'/reports/' ,
+     'submenu': [
+                    { 'name':'index', 'url':'/reports/' },
+                    { 'name':'execute_cron_test', 'url':'/reports/cron_test/', 'access':'a' },
+                    { 'name':'execure_cron_daily', 'url':'/reports/cron_daily/', 'access':'a' },
+                ]
+    },
+
  ]
 

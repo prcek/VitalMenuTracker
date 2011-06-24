@@ -11,7 +11,7 @@ from google.appengine.api import users
 
 from emails.models import EMailList
 from utils.models import User, Config
-from utils.decorators import user_required, admin_required
+from utils.decorators import user_required, power_required,  admin_required
 
 import logging
 
@@ -192,6 +192,9 @@ def config_edit(request, config_id):
 
 
 def debugTest(request):
+    for i in request.META:
+        logging.info(i)
+
     if request.auth_info.auth:
         debug = 'auth ok'
     else:

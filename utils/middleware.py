@@ -27,6 +27,7 @@ class AuthInfo:
             logging.info('auth: gae admin')
             self.auth = True
             self.admin = True
+            self.power = True
             self.name = self.gae_user.nickname()
             self.email = self.gae_user.email()
         else:
@@ -52,4 +53,13 @@ class Auth(object):
             return render_to_response('relogin.html', RequestContext(request, { }))
             
         return HttpResponseRedirect(request.auth_info.login_url)
+    return None
+
+class Cron(object):
+  def process_request(self, request):
+    request.__class__.cron_request = False 
+    if 'HTTP_X_APPENGINE_CRON' in request.META:
+        logging.info('X-AppEngine-Cron detected. This is cron request.')
+        request.__class__.cron_request = True 
+        
     return None

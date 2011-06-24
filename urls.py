@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     (r'^accounts/',include('accounts.urls')),
     (r'^emails/',include('emails.urls')),
     (r'^utils/',include('utils.urls')),
+    (r'^reports/',include('reports.urls')),
     (r'^$', 'accounts.views.goHome'),
 
     # Uncomment this for admin:

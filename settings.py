@@ -81,6 +81,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'google.appengine.ext.appstats.recording.AppStatsDjangoMiddleware',
+    'utils.middleware.Cron',
     'utils.middleware.Auth',
 
 #    'django.contrib.sessions.middleware.SessionMiddleware',
@@ -109,7 +110,7 @@ INSTALLED_APPS = (
      'accounts',
      'emails',
      'utils',
-#     'utils.templatetags',
+     'reports',
 #    'django.contrib.auth',
 #    'django.contrib.contenttypes',
 #    'django.contrib.sessions',

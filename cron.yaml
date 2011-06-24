@@ -1,0 +1,9 @@
+cron:
+- description: test report
+  url: /reports/cron_test/
+  schedule: every 5 minutes synchronized
+
+- description: daily report 
+  url: /reports/cron_daily/
+  schedule: every day 01:00
+
