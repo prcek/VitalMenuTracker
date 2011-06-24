@@ -20,6 +20,8 @@ urlpatterns = patterns('',
     (r'^emails/',include('emails.urls')),
     (r'^utils/',include('utils.urls')),
     (r'^reports/',include('reports.urls')),
+    (r'^cron_jobs/report_test/', 'reports.views.cron_test'),
+    (r'^cron_jobs/report_daily/', 'reports.views.cron_daily'),
     (r'^$', 'accounts.views.goHome'),
 
     # Uncomment this for admin:

@@ -26,6 +26,17 @@ def power_required(function):
         return HttpResponseRedirect(users.create_login_url(request.path))
     return login_required_wrapper
 
+def cron_required(function):
+    def login_required_wrapper(request, *args, **kw):
+        logging.info('cron_required wrapper')
+        if request.auth_info.auth:
+            if request.auth_info.admin or request.auth_info.cron:
+                return function(request, *args, **kw)
+            else:
+                return HttpResponseForbidden('cron/admin user required')
+        return HttpResponseRedirect(users.create_login_url(request.path))
+    return login_required_wrapper
+
 def admin_required(function):
     def login_required_wrapper(request, *args, **kw):
         logging.info('admin_required wrapper')

@@ -1,9 +1,9 @@
 cron:
 - description: test report
-  url: /reports/cron_test/
+  url: /cron_jobs/report_test/
   schedule: every 5 minutes synchronized
 
 - description: daily report 
-  url: /reports/cron_daily/
+  url: /cron_jobs/report_daily/
   schedule: every day 01:00
 

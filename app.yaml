@@ -1,5 +1,5 @@
 application: vitalmenu
-version: 11
+version: 12-test
 runtime: python
 api_version: 1
 
@@ -21,6 +21,10 @@ handlers:
   static_files: static/favicon.ico
   upload: favicon\.ico
   mime_type: image/x-icon
+
+- url: /cron_jobs/.*
+  script: main.py
+  login: admin
 
 - url: /.*
   script: main.py

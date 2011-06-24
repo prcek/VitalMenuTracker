@@ -12,9 +12,17 @@ class AuthInfo:
     wrong = False
     admin = False
     power = False
+    cron = False
     def __init__(self, request):
         self.gae_user = users.get_current_user()
         self.gae_admin = users.is_current_user_admin()
+
+        if (request.cron_request) and request.path.startswith('/cron_jobs/'):
+            logging.info('auth: cron user')
+            self.cron = True 
+            self.auth = True
+            
+
         if self.gae_user:
             self.user = User.objects.all().filter('email =',self.gae_user.email()).get()
         else:
