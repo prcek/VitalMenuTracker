@@ -15,16 +15,26 @@ class Account(BaseModel):
        return self.name
 
 
-#    def updateBalance(self):
-#        if self.balance is None:
-#            self.balance = 0
-#        else:
-#            self.balance = self.balance + 1
-#            self.recount_date = datetime.datetime.utcnow()
-
-
     def setChange(self):
         self.change_date = datetime.datetime.utcnow()
+
+    def getReportInfo(self):
+        report = 'name:'
+        if self.name != None:
+            report = report + ' "%s" ' % self.name
+        else:
+            report = report + ' ? '
+        
+        report = report + 'balance: '
+        if self.balance != None:
+            report = report + '%d' % self.balance
+        else:
+            report = report + ' ?'
+
+        if self.last_change != None:
+            report = report + ' last change: %s' % self.last_change
+        
+        return report
 
 
 class Transaction(BaseModel):
@@ -48,4 +58,7 @@ class Transaction(BaseModel):
         return db.run_in_transaction(self.trSave)
    
                  
+    def getReportInfo(self):
+        report = '%s - %d - "%s"' % (self.create_date, self.amount, self.desc)
+        return report
 
