@@ -12,6 +12,7 @@ builtins:
 - datastore_admin: on
 - appstats: on
 - remote_api: on
+- deferred: on     
 
 handlers:
 - url: /static
