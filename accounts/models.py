@@ -9,6 +9,9 @@ class Account(BaseModel):
     name = db.StringProperty()
     desc = db.StringProperty()
     balance = db.IntegerProperty()
+    report_email = db.StringProperty()
+    report_active = db.BooleanProperty()
+    report_in_summary = db.BooleanProperty()
     recount_date = db.DateTimeProperty('last recount') 
     last_change = db.DateTimeProperty('date changed')
     def __unicode__(self):

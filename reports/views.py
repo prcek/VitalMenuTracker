@@ -7,6 +7,8 @@ from utils.decorators import user_required, power_required, admin_required, cron
 
 
 from utils.mail import send_mail_to_admins
+from utils.config import getConfig
+
 from accounts.utils import getAccountsReport, getDetailAccountReport
 from accounts.models import Account
 from google.appengine.ext import deferred
@@ -59,8 +61,17 @@ def cron_test(request):
 @cron_required
 def cron_daily(request):
     logging.info('cron daily')
-    do_accounts_report()
-    do_trans_reports()
+
+    if getConfig('REPORT_DAILY_SUMMARY'):
+        do_accounts_report()
+    else:
+        logging.info('daily summary report disabled (cfg key: REPORT_DAILY_SUMMARY)')
+
+    if getConfig('REPORT_DAILY_TRANSACTIONS'):
+        do_trans_reports()
+    else:
+        logging.info('daily transactions report disabled (cfg key: REPORT_DAILY_TRANSACTIONS)')
+        
     if request.cron_request:
         logging.info('HttpResponse ok')
         return HttpResponse('ok')
