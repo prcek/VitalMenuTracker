@@ -6,7 +6,7 @@ from django.template import RequestContext,Context, loader
 from utils.decorators import user_required, power_required, admin_required, cron_required
 
 
-from utils.mail import send_mail_to_admins
+from utils.mail import send_mail_to_admins, send_mail_to_user
 from utils.config import getConfig
 
 from accounts.utils import getAccountsReport, getDetailAccountReport
@@ -24,7 +24,7 @@ def deferred_one_trans_report(account_id=None, account_email=None):
     logging.info('do_one_trans_report(%d,"%s")' % (account_id,account_email))
     account_report = 'detail ' + getDetailAccountReport(account_id)
     logging.info('account report: "%s"' % account_report)
-    send_mail_to_admins('VMTracker account id:%d report' % account_id, account_report)
+    send_mail_to_user('VMTracker account id:%d report' % account_id, account_report, account_email)
 
 def deferred_accounts_report():
     account_report = getAccountsReport()
@@ -35,10 +35,13 @@ def deferred_accounts_report():
 def do_trans_reports():
     account_list = Account.objects.all().fetch(100)
     for account in account_list:
-        account_id = account.key().id()
-        account_email = '' # account.owner_email
-        logging.info('add task for "do_one_trans_report(%d,"%s")"' % (account_id, account_email))
-        deferred.defer(deferred_one_trans_report, account_id, account_email)
+        if account.report_active: 
+            account_id = account.key().id()
+            account_email = account.report_email
+            logging.info('add task for "do_one_trans_report(%d,"%s")"' % (account_id, account_email))
+            deferred.defer(deferred_one_trans_report, account_id, account_email)
+        else:
+            logging.info('transaction report for account %d is disabled' % account.key().id())
     logging.info('all tasks planned')
 
 def do_accounts_report():

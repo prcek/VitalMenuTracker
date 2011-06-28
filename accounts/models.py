@@ -22,20 +22,21 @@ class Account(BaseModel):
         self.change_date = datetime.datetime.utcnow()
 
     def getReportInfo(self):
-        report = 'name:'
+        report = 'id: %d' % self.key().id()
+        report = report +', name:'
         if self.name != None:
-            report = report + ' "%s" ' % self.name
+            report = report + ' "%s"' % self.name
         else:
-            report = report + ' ? '
+            report = report + ' ?'
         
-        report = report + 'balance: '
+        report = report + ', balance: '
         if self.balance != None:
             report = report + '%d' % self.balance
         else:
-            report = report + ' ?'
+            report = report + '?'
 
         if self.last_change != None:
-            report = report + ' last change: %s' % self.last_change
+            report = report + ', last change: %s' % self.last_change
         
         return report
 
@@ -59,9 +60,8 @@ class Transaction(BaseModel):
 
     def save(self):
         return db.run_in_transaction(self.trSave)
-   
-                 
+
+        
     def getReportInfo(self):
-        report = '%s - %d - "%s"' % (self.create_date, self.amount, self.desc)
-        return report
+        return '%d,%s;%d;"%s"' % (self.key().id(),self.create_date, self.amount, self.desc)
 

@@ -14,7 +14,8 @@ def getAccountsReport(user_id=None):
     
     account_list = Account.objects.all().fetch(100)    
     for account in account_list:
-        report = report +  account.getReportInfo() + '\n'
+        if account.report_in_summary:
+            report = report +  account.getReportInfo() + '\n'
          
     return report 
 
@@ -31,7 +32,7 @@ def getDetailAccountReport(account_id=None):
 
     report = report + '\nAccount:\n'
     report = report + account.getReportInfo()
-    report = report + '\n\nLast 10 transactions:\n'
+    report = report + '\n\nLast 10 transactions: [id;date;amount;desc]\n"' 
 
     transaction_list = Transaction.objects.all().ancestor(account).order('-create_date').fetch(10)
     for transaction in transaction_list:
