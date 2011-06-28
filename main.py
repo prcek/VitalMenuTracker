@@ -25,6 +25,10 @@ import os
 import sys
 import logging
 
+# Remove the standard version of Django 
+for k in [k for k in sys.modules if k.startswith('django')]: 
+    del sys.modules[k] 
+
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
@@ -32,7 +36,7 @@ from google.appengine.dist import use_library
 use_library('django', '1.2')
 
 from appengine_django import InstallAppengineHelperForDjango
-InstallAppengineHelperForDjango()
+InstallAppengineHelperForDjango(version='1.2')
 
 from appengine_django import have_django_zip
 from appengine_django import django_zip_path
