@@ -1,4 +1,4 @@
-# Create your views here.
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template import RequestContext, Context, loader
@@ -200,7 +200,7 @@ def pdf_test(request):
 
 
 def debugTest(request):
-    debug = ''
+    debug = '+ěščřžýáíé'
     from utils.pdf import pdftest
     pdftest()
     return HttpResponse(debug)
