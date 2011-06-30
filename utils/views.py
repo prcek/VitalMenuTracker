@@ -8,7 +8,7 @@ import re
 import django
 import os
 from google.appengine.api import users
-from google.appengine.ext.blobstore import BlobInfo
+from google.appengine.ext import blobstore
 
 from emails.models import EMailList
 from utils.models import User, Config
@@ -204,7 +204,7 @@ def pdf_test(request):
 
 @admin_required
 def files_list(request):
-    list = BlobInfo.all().order('-creation').fetch(100) 
+    list = blobstore.BlobInfo.all().order('-creation').fetch(100) 
     return render_to_response('utils/file_list.html', RequestContext(request, { 'file_list':list }))
 
 @admin_required
@@ -218,6 +218,12 @@ def files_upload(request):
     else:
         form = UploadFileForm() 
     return render_to_response('utils/file_upload.html', RequestContext(request, { 'form': form }))
+
+@admin_required
+def files_upload_gae(request):
+    form = UploadFileForm() 
+    url = blobstore.create_upload_url('/upload')
+    return render_to_response('utils/file_upload_gae.html', RequestContext(request, { 'form': form, 'target_url': url }))
 
 @admin_required
 def files_get(request, file_key):

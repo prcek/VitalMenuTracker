@@ -27,6 +27,15 @@ handlers:
   script: main.py
   login: admin
 
+- url: /upload
+  script: files.py
+  login: admin
+
+- url: /download/.*
+  script: files.py
+  login: admin
+
+
 - url: /.*
   script: main.py
 
