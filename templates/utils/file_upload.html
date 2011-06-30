@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %} file upload {% endblock %}
+
+{% block content %}
+<form enctype="multipart/form-data" method="post" name="form">
+{{ form.as_p }}
+<input class="button" type="submit" value="upload">
+</form>
+{% endblock %}
+

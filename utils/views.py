@@ -8,9 +8,11 @@ import re
 import django
 import os
 from google.appengine.api import users
+from google.appengine.ext.blobstore import BlobInfo
 
 from emails.models import EMailList
 from utils.models import User, Config
+from utils.data import handle_uploaded_file, delete_uploaded_file, response_uploaded_file
 from utils.decorators import user_required, power_required,  admin_required
 
 import logging
@@ -28,7 +30,9 @@ class ConfigForm(forms.ModelForm):
         model = Config
         fields = ( 'active', 'name','value' )
 
-
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file = forms.FileField()
 
 
 class EmailListForm(forms.Form):
@@ -197,6 +201,34 @@ def pdf_test(request):
     r =  HttpResponse(pdf,mimetype='application/pdf')
     r['Content-Disposition'] = 'attachment; filename=pdf_test.pdf'
     return r
+
+@admin_required
+def files_list(request):
+    list = BlobInfo.all().order('-creation').fetch(100) 
+    return render_to_response('utils/file_list.html', RequestContext(request, { 'file_list':list }))
+
+@admin_required
+def files_upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            logging.info('file upload - "%s"' % request.FILES['file']) 
+            handle_uploaded_file(request.FILES['file'])
+            return redirect('/utils/files/')
+    else:
+        form = UploadFileForm() 
+    return render_to_response('utils/file_upload.html', RequestContext(request, { 'form': form }))
+
+@admin_required
+def files_get(request, file_key):
+    logging.info('file get key = "%s"'%file_key)
+    return response_uploaded_file(file_key)
+
+@admin_required
+def files_delete(request, file_key):
+    logging.info('file delete key = "%s"'%file_key)
+    delete_uploaded_file(file_key)
+    return redirect('/utils/files')
 
 
 def debugTest(request):

@@ -15,6 +15,10 @@ urlpatterns = patterns('utils.views',
     (r'^config/(?P<config_id>\d+)/edit/$', 'config_edit'),
     (r'^help/$', 'showHelp'),
     (r'^pdf_test/$', 'pdf_test'),
+    (r'^files/$', 'files_list'),
+    (r'^files/upload/$' , 'files_upload'),
+    (r'^files/(?P<file_key>[^/]+)/$', 'files_get'),
+    (r'^files/(?P<file_key>[^/]+)/delete/$', 'files_delete'),
     (r'^debug/$', 'debugTest'),
 )
 
