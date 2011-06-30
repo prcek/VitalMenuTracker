@@ -1,6 +1,6 @@
+from __future__ import with_statement
 from google.appengine.api import files
 from google.appengine.ext import blobstore
-#from __future__ import with_statement
 from django.http import HttpResponse, Http404
 import logging
 
