@@ -39,7 +39,8 @@ class Account(BaseModel):
             report = report + ', last change: %s' % self.last_change
         
         return report
-
+    def as_csv_row(self):
+        return [self.key().id(), name, desc, balance, report_email, report_active, report_in_summary, last_change]
 
 class Transaction(BaseModel):
     counterAccount = db.ReferenceProperty(Account)
@@ -65,3 +66,5 @@ class Transaction(BaseModel):
     def getReportInfo(self):
         return '%d,%s;%d;"%s"' % (self.key().id(),self.create_date, self.amount, self.desc)
 
+    def as_csv_row(self):
+        return [self.key().id(), amount, create_date, desc,counterAccount]

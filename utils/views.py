@@ -17,6 +17,7 @@ from utils.decorators import user_required, power_required,  admin_required
 
 import logging
 
+
 def index(request):
     return redirect('/utils/email')
 
@@ -195,7 +196,7 @@ def config_edit(request, config_id):
         form = ConfigForm(instance=config)
     return render_to_response('utils/config_edit.html', RequestContext(request, { 'form': form }) ) 
 
-
+@admin_required
 def pdf_test(request):
     from utils.pdf import pdftest
     from utils.config import getConfig
@@ -203,6 +204,18 @@ def pdf_test(request):
     r =  HttpResponse(pdf,mimetype='application/pdf')
     r['Content-Disposition'] = 'attachment; filename=pdf_test.pdf'
     return r
+
+@admin_required
+def csv_test(request):
+    from utils.data import dump_to_csv
+    import StringIO
+    output = StringIO.StringIO()
+    dump_to_csv(Config.objects.all(), output)
+    r = HttpResponse(output.getvalue())
+#    r =  HttpResponse(output.getvalue(),mimetype='text/comma-separated-values')
+#    r['Content-Disposition'] = 'attachment; filename=csv_test.csv'
+    return r
+
 
 @admin_required
 def files_list(request):

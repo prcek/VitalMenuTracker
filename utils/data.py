@@ -2,6 +2,7 @@ from __future__ import with_statement
 from google.appengine.api import files
 from google.appengine.ext import blobstore
 from django.http import HttpResponse, Http404
+import csv,codecs,cStringIO
 import logging
 
 def handle_uploaded_file(f):
@@ -36,3 +37,12 @@ def response_uploaded_file(k):
     r =  HttpResponse(data,mimetype=blob_reader.blob_info.content_type)
     r['Content-Disposition'] = 'attachment; filename=%s'%blob_reader.blob_info.filename
     return r
+
+
+def dump_to_csv(query,out):
+    wr = csv.writer(out,delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)        
+    for obj in query:
+        logging.info(obj.as_csv_row())
+        wr.writerow(obj.as_csv_row())
+ 
+

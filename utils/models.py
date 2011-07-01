@@ -13,9 +13,12 @@ class User(BaseModel):
     def __unicode__(self):
        return self.email
 
+
 class Config(BaseModel):
     active = db.BooleanProperty()
     name = db.StringProperty()
     value = db.StringProperty()
+    def as_csv_row(self):
+        return [self.key().kind(),self.key().id(),self.active,self.name,self.value]
         
 
