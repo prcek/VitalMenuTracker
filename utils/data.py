@@ -38,9 +38,40 @@ def response_uploaded_file(k):
     r['Content-Disposition'] = 'attachment; filename=%s'%blob_reader.blob_info.filename
     return r
 
+class UnicodeWriter:
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+        # Redirect output to a queue
+        self.queue = cStringIO.StringIO()
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+        self.stream = f
+        self.encoder = codecs.getincrementalencoder(encoding)()
+
+    def writerow(self, row):
+        orow = []
+        for s in row:
+            if 'encode' in dir(s):
+                orow.append(s.encode("utf-8"))
+            else:
+                orow.append(s)
+            
+        self.writer.writerow(orow)
+        # Fetch UTF-8 output from the queue ...
+        data = self.queue.getvalue()
+        data = data.decode("utf-8")
+        # ... and reencode it into the target encoding
+        data = self.encoder.encode(data)
+        # write to the target stream
+        self.stream.write(data)
+        # empty queue
+        self.queue.truncate(0)
+
+    def writerows(self, rows):
+        for row in rows:
+            self.writerow(row)
+
 
 def dump_to_csv(query,out):
-    wr = csv.writer(out,delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)        
+    wr = UnicodeWriter(out,delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)        
     for obj in query:
         logging.info(obj.as_csv_row())
         wr.writerow(obj.as_csv_row())
