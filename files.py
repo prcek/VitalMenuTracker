@@ -7,14 +7,19 @@ import urllib
 import logging
 
 
+def log_args(r):
+    for a in r.arguments():
+        logging.info('arg "%s"="%s"' % (a,r.get(a)))
+
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         try:
             for upload in self.get_uploads():
                 logging.info('upload done - key:"%s"'%upload.key())
-            self.redirect('/utils/files/')
+            
+            self.redirect('%s%s'%(self.request.get('post_action_ok'),upload.key()))
         except:
-            self.redirect('/utils/files/upload_error_gae/')
+            self.redirect(self.request.get('post_action_error'))
 
 class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, key):

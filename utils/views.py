@@ -31,6 +31,8 @@ class ConfigForm(forms.ModelForm):
         fields = ( 'active', 'name','value' )
 
 class UploadFileForm(forms.Form):
+    post_action_ok = forms.CharField(widget=forms.widgets.HiddenInput())
+    post_action_error = forms.CharField(widget=forms.widgets.HiddenInput())
     title = forms.CharField(max_length=50)
     file = forms.FileField()
 
@@ -221,9 +223,18 @@ def files_upload(request):
 
 @admin_required
 def files_upload_gae(request):
-    form = UploadFileForm() 
+    form = UploadFileForm(initial={'post_action_ok':'/utils/files/upload_ok/', 'post_action_error':'/utils/files/upload_error/'}) 
     url = blobstore.create_upload_url('/upload')
     return render_to_response('utils/file_upload_gae.html', RequestContext(request, { 'form': form, 'target_url': url }))
+
+@admin_required
+def files_post_ok(request,file_key):
+    return render_to_response('utils/file_post_upload.html', RequestContext(request, { 'result': 'ok' , 'key':file_key}))
+
+@admin_required
+def files_post_error(request,file_key):
+    return render_to_response('utils/file_post_upload.html', RequestContext(request, { 'result': 'error', 'key':file_key }))
+
 
 @admin_required
 def files_get(request, file_key):
