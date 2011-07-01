@@ -10,7 +10,7 @@
     <tr><th>key</th><th>filename</th><th>content_type</th><th>creation</th><th>size</th><th>actions</th></tr>
     {% for file in file_list %}
         <tr><td>{{file.key}}</td><td>{{file.filename}}</td><td>{{file.content_type}}</td><td>{{file.creation}}</td><td>{{file.size}}</td>
-        <td><a class='button' href='{{file.key}}/'>download</a>&nbsp;<a class='button' href='/download/{{file.key}}/'>download_gae</a>&nbsp;<a class='button' href='{{file.key}}/delete/'>delete</a></td></tr>
+        <td><a class='button' href='{{file.key}}/'>op</a><a class='button' href='{{file.key}}/get/'>download</a>&nbsp;<a class='button' href='/download/{{file.key}}/'>download_gae</a>&nbsp;<a class='button' href='{{file.key}}/delete/'>delete</a></td></tr>
     {% endfor %}
     </table>
 {% else %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    file info:<br>
+    filename = {{ info.filename }}<br>
+    contenttype = {{ info.content_type }}<br>
+    size = {{ info.size }}<br>
+    key = {{ info.key }}<br>
+    <br>
+    <a class='button' href='..'>back to list</a>
+    <a class='button' href='decode/1250/'>decode 1250</a>
+    <a class='button' href='decode/latin2/'>decode latin2</a>
+{% endblock %}
+

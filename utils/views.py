@@ -277,6 +277,14 @@ def files_decode(request, file_key, coding):
     return HttpResponse('ok - key:%s'%new_key) 
 
 
+@admin_required
+def files_op(request, file_key):
+    info = blobstore.BlobInfo.get(file_key)
+    if info is None:
+        raise Http404
+    return render_to_response('utils/file_op.html', RequestContext(request, { 'info': info }))
+    
+
 def debugTest(request):
     debug = '+ěščřžýáíé'
     from utils.pdf import pdftest
