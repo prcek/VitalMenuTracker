@@ -12,7 +12,7 @@ from google.appengine.ext import blobstore
 
 from emails.models import EMailList
 from utils.models import User, Config
-from utils.data import handle_uploaded_file, delete_uploaded_file, response_uploaded_file
+from utils.data import handle_uploaded_file, delete_uploaded_file, response_uploaded_file, decode_uploaded_file
 from utils.decorators import user_required, power_required,  admin_required
 
 import logging
@@ -268,6 +268,13 @@ def files_delete(request, file_key):
     logging.info('file delete key = "%s"'%file_key)
     delete_uploaded_file(file_key)
     return redirect('/utils/files')
+
+@admin_required
+def files_decode(request, file_key, coding):
+    logging.info('file decode key:"%s" coding:"%s"' % (file_key, coding))
+    new_key = decode_uploaded_file(file_key,coding)
+    logging.info('result key: "%s"' % new_key)
+    return HttpResponse('ok - key:%s'%new_key) 
 
 
 def debugTest(request):

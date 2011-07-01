@@ -123,3 +123,28 @@ def read_blob_csv(fk,X):
     
     blob_reader = blob_info.open() 
     return read_csv(blob_reader,X)
+
+def decode_stream(fi,coding,fo):
+    fi = UTF8Recoder(fi,coding)
+    for line in fi:
+        fo.write(line)
+
+def decode_uploaded_file(fk,c):
+    blob_info = blobstore.BlobInfo.get(fk)
+    if not blob_info:
+        return None
+    
+    blob_reader = blob_info.open() 
+    
+    file_name = files.blobstore.create(mime_type=blob_info.content_type, _blobinfo_uploaded_filename = blob_info.filename)
+
+    with files.open(file_name, 'a') as out:
+        decode_stream(blob_reader, c, out)
+
+    files.finalize(file_name)
+
+    blob_key = files.blobstore.get_blob_key(file_name)
+    logging.info('file key:%s'%blob_key)
+    return blob_key
+
+

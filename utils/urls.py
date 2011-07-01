@@ -24,6 +24,7 @@ urlpatterns = patterns('utils.views',
     (r'^files/upload_error/(?P<file_key>[^/]+)/?$', 'files_post_error'),
     (r'^files/(?P<file_key>[^/]+)/$', 'files_get'),
     (r'^files/(?P<file_key>[^/]+)/delete/$', 'files_delete'),
+    (r'^files/(?P<file_key>[^/]+)/decode/(?P<coding>[^/]+)/?$', 'files_decode'),
     (r'^debug/$', 'debugTest'),
 )
 
