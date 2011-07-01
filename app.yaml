@@ -14,6 +14,9 @@ builtins:
 - remote_api: on
 - deferred: on     
 
+inbound_services:
+- mail
+
 handlers:
 - url: /static
   static_dir: static
@@ -35,6 +38,9 @@ handlers:
   script: files.py
   login: admin
 
+- url: /_ah/mail/.+
+  script: inmail.py
+  login: admin
 
 - url: /.*
   script: main.py
