@@ -70,10 +70,56 @@ class UnicodeWriter:
             self.writerow(row)
 
 
+class UTF8Recoder:
+    """
+    Iterator that reads an encoded stream and reencodes the input to UTF-8
+    """
+    def __init__(self, f, encoding):
+        self.reader = codecs.getreader(encoding)(f)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        return self.reader.next().encode("utf-8")
+
+class UnicodeReader:
+    """
+    A CSV reader which will iterate over lines in the CSV file "f",
+    which is encoded in the given encoding.
+    """
+
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+        f = UTF8Recoder(f, encoding)
+        self.reader = csv.reader(f, dialect=dialect, **kwds)
+
+    def next(self):
+        row = self.reader.next()
+        return [unicode(s, "utf-8") for s in row]
+
+    def __iter__(self):
+        return self
+
 def dump_to_csv(query,out):
     wr = UnicodeWriter(out,delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)        
     for obj in query:
         logging.info(obj.as_csv_row())
         wr.writerow(obj.as_csv_row())
  
+def read_csv(f, X):
+    ret = []
+    rr = UnicodeReader(f,encoding='1250', delimiter=';', quotechar='"')
+    for row in rr:
+        logging.info(row) 
+        x = X() 
+        if x.from_csv_row(row):
+            ret.append(x)
+    return ret
 
+def read_blob_csv(fk,X):
+    blob_info = blobstore.BlobInfo.get(fk)
+    if not blob_info:
+        return None
+    
+    blob_reader = blob_info.open() 
+    return read_csv(blob_reader,X)

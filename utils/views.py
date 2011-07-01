@@ -216,6 +216,15 @@ def csv_test(request):
 #    r['Content-Disposition'] = 'attachment; filename=csv_test.csv'
     return r
 
+@admin_required
+def csv_test_import(request, file_key):
+    from utils.data import read_blob_csv
+    objs = read_blob_csv(file_key,Config)
+    logging.info(objs)
+    return render_to_response('utils/config_show.html', RequestContext(request, { 'config': objs[1] }))
+    #return HttpResponse('ok')
+
+
 
 @admin_required
 def files_list(request):

@@ -20,5 +20,8 @@ class Config(BaseModel):
     value = db.StringProperty()
     def as_csv_row(self):
         return [self.key().kind(),self.key().id(),self.active,self.name,self.value]
+    def from_csv_row(self,row=[]):
+        self.name = row[2]
+        return True
         
 
