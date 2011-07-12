@@ -34,6 +34,12 @@ app_menu = [
                     { 'name':'execure_cron_daily', 'url':'/reports/cron_daily/', 'access':'a' },
                 ]
     },
+    
+    {'name':'vital', 'url':'/vital/',
+     'submenu': [
+                    { 'name':'index', 'url':'/vital/' }
+                ]
+    },
 
  ]
 

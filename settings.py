@@ -111,6 +111,7 @@ INSTALLED_APPS = (
      'emails',
      'utils',
      'reports',
+     'vital',
 #    'django.contrib.auth',
 #    'django.contrib.contenttypes',
 #    'django.contrib.sessions',
