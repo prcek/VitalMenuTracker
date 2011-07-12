@@ -100,6 +100,22 @@ class UnicodeReader:
     def __iter__(self):
         return self
 
+
+
+class CSVBlobReader:
+    def __init__(self, fk, dialect=csv.excel, encoding="utf-8", **kwds):
+        f = blobstore.BlobReader(fk)
+        f = UTF8Recoder(f, encoding)
+        self.reader = csv.reader(f, dialect=dialect, **kwds)
+
+    def next(self):
+        row = self.reader.next()
+        return [unicode(s, "utf-8") for s in row]
+
+    def __iter__(self):
+        return self
+   
+
 def dump_to_csv(query,out):
     wr = UnicodeWriter(out,delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)        
     for obj in query:
