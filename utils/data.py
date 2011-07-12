@@ -104,6 +104,9 @@ class UnicodeReader:
 
 class CSVBlobReader:
     def __init__(self, fk, dialect=csv.excel, encoding="utf-8", **kwds):
+        self.blob_info = blobstore.BlobInfo.get(fk)
+        if not self.blob_info:
+            raise blobstore.BlobNotFoundError
         f = blobstore.BlobReader(fk)
         f = UTF8Recoder(f, encoding)
         self.reader = csv.reader(f, dialect=dialect, **kwds)

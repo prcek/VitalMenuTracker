@@ -10,6 +10,12 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Order
+  ancestor: yes
+  properties:
+  - name: create_date
+    direction: desc
+
 - kind: Transaction
   ancestor: yes
   properties:
