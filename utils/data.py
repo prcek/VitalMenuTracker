@@ -5,6 +5,18 @@ from django.http import HttpResponse, Http404
 import csv,codecs,cStringIO
 import logging
 
+#def deferred_order_import(fk=None):
+#    logging.info('deferred_order_import')
+#    if fk is None:
+#        return
+#    logging.info('key = %s'%fk)
+#    blob_info = blobstore.BlobInfo.get(fk)
+#    if not blob_info:
+#        raise blobstore.BlobNotFoundError
+#    f = blobstore.BlobReader(fk)
+
+
+
 
 def store_raw_data_as_blob(data,name,content_type):
     logging.info('store raw_data as %s (%s)'%(name,content_type))

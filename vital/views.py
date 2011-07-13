@@ -10,6 +10,8 @@ from vital.models import OrderGroup,Order,OrderItem
 import logging
 import datetime
 
+
+
 def getOrderGroup(order_date):
     d = datetime.date(order_date.year,order_date.month, order_date.day) 
     d_s = d - datetime.timedelta(d.weekday())
@@ -62,6 +64,7 @@ def register_csv_order(request, file_key):
                     logging.info('order item = %s'% order_item)
 
     except BlobNotFoundError:
+        logging.info('BlobNotFoundError')
         raise Http404
 
     return render_to_response('vital/register_csv_order.html', RequestContext(request, { 'file_key': file_key, 'order_group': order_group }))

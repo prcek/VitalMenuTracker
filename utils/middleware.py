@@ -13,6 +13,7 @@ class AuthInfo:
     admin = False
     power = False
     cron = False
+    task = False
     def __init__(self, request):
         self.gae_user = users.get_current_user()
         self.gae_admin = users.is_current_user_admin()
@@ -22,6 +23,11 @@ class AuthInfo:
             self.cron = True 
             self.auth = True
             
+
+        if (request.task_request):
+            logging.info('auth: task request')
+            self.task = True
+            self.auth = True
 
         if self.gae_user:
             self.user = User.objects.all().filter('email =',self.gae_user.email()).get()
@@ -66,8 +72,13 @@ class Auth(object):
 class Cron(object):
   def process_request(self, request):
     request.__class__.cron_request = False 
+    request.__class__.task_request = False 
     if 'HTTP_X_APPENGINE_CRON' in request.META:
         logging.info('X-AppEngine-Cron detected. This is cron request.')
         request.__class__.cron_request = True 
+    if 'HTTP_X_APPENGINE_QUEUENAME' in request.META:
+        logging.info('X-AppEngine-QueueName detected. This is task request.')
+        request.__class__.task_request = True 
+
         
     return None

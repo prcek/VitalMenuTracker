@@ -1,6 +1,6 @@
 from django import template
 from django.utils import html
-from utils import menu;
+from utils.menu import app_menu;
 from google.appengine.api import users
 from utils.models import User
 
@@ -26,7 +26,7 @@ class RenderMenuNode(template.Node):
         pass
     def render(self, context):
         t = template.loader.get_template('menu.html')
-        current_menu = menu.app_menu; 
+        current_menu = app_menu; 
         
         if not 'request' in context:
             return ''
