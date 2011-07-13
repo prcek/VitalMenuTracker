@@ -5,6 +5,17 @@ from django.http import HttpResponse, Http404
 import csv,codecs,cStringIO
 import logging
 
+
+def store_raw_data_as_blob(data,name,content_type):
+    logging.info('store raw_data as %s (%s)'%(name,content_type))
+    file_name = files.blobstore.create(mime_type=content_type, _blobinfo_uploaded_filename = name)
+    with files.open(file_name, 'a') as out:
+        out.write(data)
+    files.finalize(file_name)
+    blob_key = files.blobstore.get_blob_key(file_name)
+    logging.info('file key:%s'%blob_key)
+    return blob_key
+
 def handle_uploaded_file(f):
     logging.info('handle_uploaded_file filename="%s", size=%d, content_type="%s" '%(f.name,f.size,f.content_type))
     file_name = files.blobstore.create(mime_type=f.content_type, _blobinfo_uploaded_filename = f.name)

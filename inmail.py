@@ -2,6 +2,7 @@ import logging, email
 from google.appengine.ext import webapp 
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler 
 from google.appengine.ext.webapp.util import run_wsgi_app
+from utils.data import store_raw_data_as_blob
 
 class LogSenderHandler(InboundMailHandler):
     def receive(self, mail_message):
@@ -16,6 +17,10 @@ class LogSenderHandler(InboundMailHandler):
         if hasattr(mail_message, "attachments"):
             for a in mail_message.attachments:
                 logging.info('attachment name %s'% a[0])
+                if a[0].endswith('.csv'):
+                    store_raw_data_as_blob(a[1],a[0],'text/csv')
+                else:
+                    logging.info('no csv')
         else:
             logging.info('no attachment')
 
