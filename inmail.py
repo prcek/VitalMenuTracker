@@ -7,8 +7,13 @@ class LogSenderHandler(InboundMailHandler):
     def receive(self, mail_message):
         logging.info("Received a message from: %s" % mail_message.sender)
         logging.info("mail date: %s" % mail_message.date)
+        logging.info("subject: %s" % mail_message.subject)
 
-        if hasattr(mail_message, "attachment"):
+        plaintext_bodies = mail_message.bodies('text/plain')
+        for c,b in plaintext_bodies:
+            logging.info('%s' % b.decode()) 
+
+        if hasattr(mail_message, "attachments"):
             for a in mail_message.attachments:
                 logging.info('attachment name %s'% a[0])
         else:
