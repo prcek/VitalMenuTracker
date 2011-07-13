@@ -5,7 +5,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 class LogSenderHandler(InboundMailHandler):
     def receive(self, mail_message):
-        logging.info("Received a message from: %s" % mail_message.sender)
+        logging.info("Received a message from: %s, to: %s" % (mail_message.sender, mail_message.to))
         logging.info("mail date: %s" % mail_message.date)
         logging.info("subject: %s" % mail_message.subject)
 
