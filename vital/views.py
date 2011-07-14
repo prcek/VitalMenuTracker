@@ -43,7 +43,25 @@ def getExtraOrder(order_date):
 
 
 def index(request):
-    return render_to_response('vital/index.html', RequestContext(request, { }))
+    date = datetime.datetime.utcnow();
+    return index_day(request,date.year,date.month,date.day)
+
+def index_day(request,year,month,day):
+    date = datetime.date(int(year),int(month),int(day))
+    logging.info('date=%s',date)
+
+    next_date = date + datetime.timedelta(1)
+    prev_date = date - datetime.timedelta(1)
+    now_date = datetime.date.today()
+
+    item_list = OrderItem.objects.all().filter('date = ', date).fetch(100) 
+    cost_sum = 0
+    for o in item_list:
+        if (not o.deleted) and (not o.undo_request):
+            cost_sum = cost_sum + o.cost 
+
+    return render_to_response('vital/index.html', RequestContext(request, { 'date':date, 'next_date':next_date, 'prev_date':prev_date, 'now_date':now_date, 'item_list':item_list, 'cost_sum':cost_sum }))
+
 
 
 class ExtraOrderForm(forms.ModelForm):

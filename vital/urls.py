@@ -2,6 +2,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('vital.views',
     (r'^$', 'index'),
+    (r'^(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)/?$', 'index_day'),
     (r'^orders/$','orders'),
     (r'^extra/$','extra'),
     (r'^register_csv_order/(?P<file_key>[^/]+)/?$', 'register_csv_order'),
