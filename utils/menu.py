@@ -37,7 +37,8 @@ app_menu = [
     
     {'name':'vital', 'url':'/vital/',
      'submenu': [
-                    { 'name':'index', 'url':'/vital/' }
+                    { 'name':'index', 'url':'/vital/', 'access':'u' },
+                    { 'name':'orders', 'url':'/vital/orders/', 'access':'p' }
                 ]
     },
 

@@ -1,0 +1,48 @@
+
+{% extends "base.html" %}
+
+{% block title %} vital orders {% endblock %}
+
+
+{% block content %}
+
+
+{% if group_list %}
+    <table>
+    <tr><th>id</th><th>group date</th><th>active</td><th>orders</th></tr>
+    {% for g in group_list %}
+        <tr><td>{{g.key.id}}</td><td>{{g.date}}</td><td>{{g.active}}</td>
+        <td>
+        {% if g.order_list %}
+            <table>
+            <tr><th>id</th><th>create date</th><th>items</th></tr>
+            {% for o in g.order_list %}
+                <tr><td>{{o.key.id}}</td><td>{{o.create_date}}</td>
+                <td>
+                    {% if o.item_list %}
+                        <table>
+                        <tr><th>id</th><th>deleted</th><th>date</th><th>owner</th><th>name</th><th>cost</th><th>undo</th></tr>
+                        {% for i in o.item_list %}
+                        <tr><td>{{i.key.id}}</td><td>{{i.deleted}}</td><td>{{i.date}}</td><td>{{i.owner_name}} {{i.owner_surname}}</td><td>{{i.name}}</td><td>{{i.cost}}</td><td>{{i.undo_request}}</td></tr>  
+                        {% endfor %}
+                        </table>
+                    {% else %}
+                        no items
+                    {% endif %}
+                </td> 
+                </tr>
+            {% endfor %}
+            </table> 
+        {% else %}
+            no orders
+        {% endif %} 
+        </td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no group
+{% endif %}
+
+
+{% endblock %}
+

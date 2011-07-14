@@ -27,8 +27,10 @@ def getOrderGroup(order_date):
     return og 
 
 
-
 def index(request):
+    return render_to_response('vital/index.html', RequestContext(request, { }))
+
+def orders(request):
 
     groups = OrderGroup.objects.all().order('-date').fetch(4)
     for g in groups:
@@ -40,7 +42,7 @@ def index(request):
             items = OrderItem.objects.all().ancestor(o).fetch(100)
             o.item_list = items
 
-    return render_to_response('vital/index.html', RequestContext(request, { 'group_list': groups}))
+    return render_to_response('vital/orders.html', RequestContext(request, { 'group_list': groups}))
 
 
 def register_csv_order(request, file_key):
