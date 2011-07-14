@@ -30,6 +30,10 @@ handlers:
   script: main.py
   login: admin
 
+- url: /tasks/.*
+  script: main.py
+  login: admin
+
 - url: /upload
   script: files.py
   login: admin

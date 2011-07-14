@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     (r'^vital/',include('vital.urls')),
     (r'^cron_jobs/report_test/', 'reports.views.cron_test'),
     (r'^cron_jobs/report_daily/', 'reports.views.cron_daily'),
+    (r'^tasks/register_csv_order/(?P<file_key>[^/]+)/?$', 'vital.views.register_csv_order'),
     (r'^$', 'accounts.views.goHome'),
 
     # Uncomment this for admin:

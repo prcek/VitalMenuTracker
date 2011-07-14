@@ -24,7 +24,7 @@ class AuthInfo:
             self.auth = True
             
 
-        if (request.task_request):
+        if (request.task_request) and request.path.startswith('/tasks/'):
             logging.info('auth: task request')
             self.task = True
             self.auth = True

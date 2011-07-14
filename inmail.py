@@ -22,7 +22,7 @@ def plan_import_task(fk=None):
     if fk is None:
         return
     logging.info('key = %s'%fk)
-    taskqueue.add(url='/vital/register_csv_order/%s/'%fk, method='GET')
+    taskqueue.add(url='/tasks/register_csv_order/%s/'%fk, method='GET')
     
 
 
@@ -41,12 +41,12 @@ class LogSenderHandler(InboundMailHandler):
 
 
 
-#        if mail_message.subject.startswith('test'):
-#            plaintext_bodies = mail_message.bodies('text/plain')
-#            for c,b in plaintext_bodies:
-#                fk = store_raw_data_as_blob(b.decode(),'test','text/plain')
-#                plan_import_task(fk)
-#            return
+        if mail_message.subject.startswith('test'):
+            plaintext_bodies = mail_message.bodies('text/plain')
+            for c,b in plaintext_bodies:
+                fk = store_raw_data_as_blob(b.decode(),'test','text/plain')
+                plan_import_task(fk)
+            return
         
         plaintext_bodies = mail_message.bodies('text/plain')
         for c,b in plaintext_bodies:
