@@ -23,6 +23,8 @@ class OrderItem(BaseModel):
     date = db.DateProperty()
     name = db.StringProperty()
     cost = db.IntegerProperty()
+    undo_request = db.BooleanProperty()
+    deleted = db.BooleanProperty()
     owner_name = db.StringProperty()
     owner_surname = db.StringProperty()
 
@@ -34,5 +36,10 @@ class OrderItem(BaseModel):
         self.cost = int(row[3])
         self.owner_name = row[4]
         self.owner_surname = row[5]
+        if (int(row[0])<0):
+            self.undo_request = True
+        else:
+            self.undo_request = False 
+        
         return True
       

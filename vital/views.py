@@ -57,7 +57,7 @@ def register_csv_order(request, file_key):
         order.save()
         for row in csv:
             logging.info(row)
-            for c in range(int(row[0])):
+            for c in range(abs(int(row[0]))):
                 order_item = OrderItem(parent=order)        
                 if order_item.from_csv_row(row):
                     order_item.save()
@@ -68,3 +68,30 @@ def register_csv_order(request, file_key):
         raise Http404
 
     return render_to_response('vital/register_csv_order.html', RequestContext(request, { 'file_key': file_key, 'order_group': order_group }))
+
+def show_csv_order(request, file_key):
+    try:
+        csv = CSVBlobReader(file_key,encoding='utf-8', delimiter=';', quotechar='"')
+        order_date = csv.blob_info.creation
+        logging.info('showing csv order (submit date %s, key "%s")' % (order_date,file_key))
+        list = []
+        row = csv.next()
+        if row:
+            list.append([row,None])
+        logging.info(row)
+        for row in csv:
+            logging.info(row)
+            o = OrderItem()
+            o.from_csv_row(row)
+            logging.info('order item = %s'% o)
+            list.append([row,o])
+
+        cols = max([ len(r[0]) for r in list ])
+        logging.info('cols = %d' % cols)
+            
+    except BlobNotFoundError:
+        logging.info('BlobNotFoundError')
+        raise Http404
+
+    return render_to_response('vital/show_csv_order.html', RequestContext(request, { 'file_key': file_key, 'list': list, 'cols':range(cols) }))
+
