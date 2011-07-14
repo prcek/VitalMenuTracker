@@ -13,6 +13,7 @@ class OrderGroup(BaseModel):
 class Order(BaseModel):
     create_date = db.DateTimeProperty()
     csv_file_id = db.StringProperty()
+    extra = db.BooleanProperty()
 
     def set_info(self,blob_info):
         self.create_date = blob_info.creation
@@ -25,6 +26,7 @@ class OrderItem(BaseModel):
     cost = db.IntegerProperty()
     undo_request = db.BooleanProperty()
     deleted = db.BooleanProperty()
+    extra = db.BooleanProperty()
     owner_name = db.StringProperty()
     owner_surname = db.StringProperty()
 
@@ -40,6 +42,6 @@ class OrderItem(BaseModel):
             self.undo_request = True
         else:
             self.undo_request = False 
-        
+         
         return True
       

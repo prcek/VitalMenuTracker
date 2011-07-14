@@ -1,4 +1,5 @@
 from django.http import HttpResponse, Http404
+from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template import RequestContext,Context, loader
 
@@ -26,9 +27,71 @@ def getOrderGroup(order_date):
     logging.info('order group = %s' % og)
     return og 
 
+def getExtraOrder(order_date):
+    order_group = getOrderGroup(order_date)
+    order = Order.objects.all().ancestor(order_group).filter('extra =',True).filter('create_date =',order_date).get()
+    if order is None:
+        order = Order(parent=order_group)
+        order.extra=True
+        order.create_date = order_date
+        order.save()
+        logging.info('new extra order %s'%order)
+    else:
+        logging.info('extra order %s'%order)
+    return order 
+    
+
 
 def index(request):
     return render_to_response('vital/index.html', RequestContext(request, { }))
+
+
+class ExtraOrderForm(forms.ModelForm):
+    class Meta:
+        model = OrderItem
+        fields = ( 'date','name','cost', 'undo_request' )
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if len(data)==0:
+            raise forms.ValidationError('missing value')
+        return data
+
+    def clean_date(self):
+        data = self.cleaned_data['date'] 
+        if data is None:
+            raise forms.ValidationError('missing value')
+        return data
+
+    def clean_cost(self):
+        data = self.cleaned_data['cost']
+        if data is None:
+            raise forms.ValidationError('missing value')
+        return data        
+
+
+
+def extra(request):
+    if request.method == 'POST':
+
+        form = ExtraOrderForm(request.POST)
+        if form.is_valid():
+            date =  datetime.datetime.utcnow()
+            date = datetime.datetime(date.year,date.month,date.day)
+            eo = getExtraOrder(date)
+            order_item = OrderItem(parent=eo)
+            order_item.extra = True
+            form = ExtraOrderForm(request.POST, instance=order_item)
+            if form.is_valid():
+                form.save(commit=False)
+                logging.info('extra order item = %s',order_item)
+                order_item.save()
+                return redirect('/vital/')
+    else:
+        form = ExtraOrderForm()
+
+    return render_to_response('vital/extra.html', RequestContext(request, { 'form': form}))
+
 
 def orders(request):
 

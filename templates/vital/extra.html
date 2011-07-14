@@ -1,0 +1,17 @@
+
+{% extends "base.html" %}
+
+{% block title %} vital extra order {% endblock %}
+
+
+{% block content %}
+
+<form method="post" name="form">
+{{ form.as_p }}
+<input class="button" type="submit" value="create">
+</form>
+
+
+
+{% endblock %}
+
