@@ -5,7 +5,7 @@ from accounts.models import Account,Transaction
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = ( 'name','desc','report_email', 'report_active', 'report_in_summary' )
+        fields = ( 'name','purpose','desc','report_email', 'report_active', 'report_in_summary' )
 
     def clean_name(self):
         data = self.cleaned_data['name']

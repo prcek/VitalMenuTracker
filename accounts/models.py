@@ -1,5 +1,6 @@
 from appengine_django.models import BaseModel
 from google.appengine.ext import db
+from vital.models import OrderItem
 import datetime
 import logging
 
@@ -9,6 +10,7 @@ class Account(BaseModel):
     name = db.StringProperty()
     desc = db.StringProperty()
     balance = db.IntegerProperty()
+    purpose = db.StringProperty(choices=['cash','credit','user','other']) 
     report_email = db.StringProperty()
     report_active = db.BooleanProperty()
     report_in_summary = db.BooleanProperty()
@@ -44,9 +46,12 @@ class Account(BaseModel):
 
 class Transaction(BaseModel):
     counterAccount = db.ReferenceProperty(Account)
+    orderItem = db.ReferenceProperty(OrderItem)
     amount = db.IntegerProperty()
     create_date = db.DateTimeProperty() 
-    desc = db.StringProperty(); 
+    desc = db.StringProperty() 
+    purpose = db.StringProperty(choices=['deposit','payment','transfer','correction']) 
+    
     def setDate(self):
         self.create_date = datetime.datetime.utcnow()
 
