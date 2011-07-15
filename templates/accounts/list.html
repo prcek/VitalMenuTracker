@@ -8,14 +8,25 @@
 
 {% if account_list %}
     <table>
-    <tr><th>name</th><th>balance</th><th>last change</th><th>actions</th></tr>
+    <tr><th>name</th><th>purpose</th><th>balance</th><th>last change</th><th>actions</th></tr>
     {% for account in account_list %}
-        <tr><td>{{account.name}}</td><td>{{account.balance}}</td><td>{{account.last_change}}</td><td><a class='button' href='{{account.key.id}}/'>show</a>&nbsp;<a class='button' href='{{account.key.id}}/edit/'>edit</a>&nbsp;<a class='button' href='{{account.key.id}}/transactions/'>transactions</a></td></tr>
+        <tr><td>{{account.name}}</td><td>{{account.purpose}}</td><td>{{account.balance}}</td><td>{{account.last_change}}</td><td><a class='button' href='{{account.key.id}}/'>show</a>&nbsp;<a class='button' href='{{account.key.id}}/edit/'>edit</a>&nbsp;<a class='button' href='{{account.key.id}}/transactions/'>transactions</a></td></tr>
     {% endfor %}
     </table>
+    <br>
+    <table>
+    <tr><td>credit</td><td>{{credit_sum}}</td></tr>
+    <tr><td>users</td><td>{{user_sum}}</td></tr>
+    {% if final_balance %}
+    <tr><td>diff</td><td class=error>{{final_balance}}</td></tr>
+    {% endif %}
+    </table>
+
+    <br>
 {% else %}
     no account<br>
 {% endif %}
+    
     <a class='button' href='/accounts/create/'>create</a>
     <a class='button' href='/accounts/'>reload</a>
 {% endblock %}

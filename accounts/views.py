@@ -16,7 +16,20 @@ def goHome(request):
 
 def account_list(request):
     account_list = Account.objects.all().fetch(100)
-    return render_to_response('accounts/list.html', RequestContext(request, { 'account_list': account_list}))
+
+    credit_sum = 0
+    user_sum = 0
+
+    for a in account_list:
+        if not a.balance is None:
+            if a.purpose == 'credit':
+                credit_sum = credit_sum + a.balance
+            if a.purpose == 'user':
+                user_sum = user_sum + a.balance
+
+    final_balance = credit_sum - user_sum
+
+    return render_to_response('accounts/list.html', RequestContext(request, { 'account_list': account_list, 'credit_sum':credit_sum, 'user_sum':user_sum, 'final_balance':final_balance}))
 
 def account_show(request,account_id):
     account = Account.get_by_id(int(account_id))
