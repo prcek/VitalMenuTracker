@@ -24,6 +24,9 @@ urlpatterns = patterns('',
     (r'^cron_jobs/report_test/', 'reports.views.cron_test'),
     (r'^cron_jobs/report_daily/', 'reports.views.cron_daily'),
     (r'^tasks/register_csv_order/(?P<file_key>[^/]+)/?$', 'vital.views.register_csv_order'),
+    (r'^tasks/mail_transaction_report/(?P<account_id>\d+)/$', 'reports.views.task_one_trans_report'),
+    (r'^tasks/mail_accounts_report/$', 'reports.views.task_accounts_report'),
+    (r'^utils/setup/$', 'utils.setup.setup'),
     (r'^$', 'accounts.views.goHome'),
 
     # Uncomment this for admin:

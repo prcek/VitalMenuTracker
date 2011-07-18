@@ -11,7 +11,9 @@ from utils.config import getConfig
 
 from accounts.utils import getAccountsReport, getDetailAccountReport
 from accounts.models import Account
-from google.appengine.ext import deferred
+#from google.appengine.ext import deferred
+from google.appengine.api import taskqueue
+
 
 
 import logging
@@ -20,16 +22,21 @@ import logging
 def index(request):
     return render_to_response('reports/index.html', RequestContext(request))
 
-def deferred_one_trans_report(account_id=None, account_email=None):
-    logging.info('do_one_trans_report(%d,"%s")' % (account_id,account_email))
-    account_report = 'detail ' + getDetailAccountReport(account_id)
+def task_one_trans_report(request,account_id=None):
+    account = Account.get_by_id(int(account_id))
+    if account is None:
+        raise Http404
+    logging.info('do_one_trans_report(%s)' % (account_id))
+    account_report = 'detail ' + getDetailAccountReport(account.key().id)
     logging.info('account report: "%s"' % account_report)
     send_mail_to_user('VMTracker account id:%d report' % account_id, account_report, account_email)
+    return HttpResponse('ok')
 
-def deferred_accounts_report():
+def task_accounts_report(request):
     account_report = getAccountsReport()
     logging.info('accounts report: %s', account_report)
     send_mail_to_admins('VMTracker daily report',account_report)
+    return HttpResponse('ok')
  
    
 def do_trans_reports():
@@ -39,23 +46,20 @@ def do_trans_reports():
             account_id = account.key().id()
             account_email = account.report_email
             logging.info('add task for "do_one_trans_report(%d,"%s")"' % (account_id, account_email))
-            deferred.defer(deferred_one_trans_report, account_id, account_email)
+            taskqueue.add(url='/tasks/mail_transaction_report/%s/'%account_id, method='GET')
+            #deferred.defer(deferred_one_trans_report, account_id, account_email)
         else:
             logging.info('transaction report for account %d is disabled' % account.key().id())
     logging.info('all tasks planned')
 
 def do_accounts_report():
-    deferred.defer(deferred_accounts_report)
+    taskqueue.add(url='/tasks/mail_accounts_report/', method='GET')
+#    deferred.defer(deferred_accounts_report)
         
 
 @cron_required
 def cron_test(request):
     logging.info('cron test')
-#    send_mail_to_admins('test report','this is test report')
-#    account_id = Account.objects.all().get().key().id()
-#    account_report = 'detail ' + getDetailAccountReport(account_id)
-#    logging.info('account report: "%s"' % account_report)
-#    do_trans_reports()
     if request.cron_request:
         logging.info('HttpResponse ok')
         return HttpResponse('ok')

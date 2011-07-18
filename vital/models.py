@@ -1,5 +1,6 @@
 from appengine_django.models import BaseModel
 from google.appengine.ext import db
+from accounts.models import Account,Transaction
 import datetime
 import logging
 
@@ -50,4 +51,18 @@ class OrderItem(BaseModel):
         else:
             return '%s %s %d' % (self.date,self.name,self.cost)
 
+
+class Clearance(BaseModel):
+    date = db.DateProperty()        
+    clear = db.BooleanProperty()
       
+
+class ClearanceItem(BaseModel):
+    purpose = db.StringProperty(choices=['pick','give'])
+    clear = db.BooleanProperty() 
+    account = db.ReferenceProperty(Account)
+    transaction = db.ReferenceProperty(Transaction)
+    order_item = db.ReferenceProperty(OrderItem)
+    
+     
+    

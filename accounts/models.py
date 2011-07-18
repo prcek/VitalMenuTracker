@@ -1,6 +1,6 @@
 from appengine_django.models import BaseModel
 from google.appengine.ext import db
-from vital.models import OrderItem
+#from vital.models import OrderItem
 import datetime
 import logging
 
@@ -46,7 +46,7 @@ class Account(BaseModel):
 
 class Transaction(BaseModel):
     counterAccount = db.ReferenceProperty(Account)
-    orderItem = db.ReferenceProperty(OrderItem)
+#    orderItem = db.ReferenceProperty(OrderItem)
     amount = db.IntegerProperty()
     create_date = db.DateTimeProperty() 
     desc = db.StringProperty() 
