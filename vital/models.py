@@ -44,4 +44,10 @@ class OrderItem(BaseModel):
             self.undo_request = False 
          
         return True
+    def __unicode__(self):
+        if self.key():
+            return '[%s] %s %s %d' % (self.key().id(),self.date,self.name,self.cost)
+        else:
+            return '%s %s %d' % (self.date,self.name,self.cost)
+
       
