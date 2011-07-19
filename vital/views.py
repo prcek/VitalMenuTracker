@@ -178,3 +178,16 @@ def show_csv_order(request, file_key):
 
     return render_to_response('vital/show_csv_order.html', RequestContext(request, { 'file_key': file_key, 'list': list, 'cols':range(cols) }))
 
+
+def clearance_index(request):
+    return render_to_response('vital/clearance_index.html', RequestContext(request, {}))
+
+def clearance_show(request, clearance_id):
+    return render_to_response('vital/clearance_show.html', RequestContext(request, {}))
+
+def clearance_edit(request, clearance_id):
+    return render_to_response('vital/clearance_edit.html', RequestContext(request, {}))
+
+def clearance_create(request):
+    return render_to_response('vital/clearance_create.html', RequestContext(request, {}))
+

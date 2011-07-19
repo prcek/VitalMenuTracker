@@ -30,6 +30,7 @@ class OrderItem(BaseModel):
     extra = db.BooleanProperty()
     owner_name = db.StringProperty()
     owner_surname = db.StringProperty()
+    
 
 #csv format - [count, date(dd.mm.yyyy), name, cost, name, surname]
     def from_csv_row(self,row=[]):
