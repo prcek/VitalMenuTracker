@@ -49,7 +49,7 @@ class Account(BaseModel):
 
 class Transaction(BaseModel):
     counterAccount = db.ReferenceProperty(Account)
-#    orderItem = db.ReferenceProperty(OrderItem)
+    orderItem = db.ReferenceProperty()
     amount = db.IntegerProperty()
     create_date = db.DateTimeProperty() 
     desc = db.StringProperty() 
