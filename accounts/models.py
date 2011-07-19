@@ -44,6 +44,9 @@ class Account(BaseModel):
     def as_csv_row(self):
         return [self.key().id(), name, desc, balance, report_email, report_active, report_in_summary, last_change]
 
+    def as_select_string(self):
+        return "[%d] %s - %s" % (self.key().id(), self.purpose, self.name)
+
 class Transaction(BaseModel):
     counterAccount = db.ReferenceProperty(Account)
 #    orderItem = db.ReferenceProperty(OrderItem)

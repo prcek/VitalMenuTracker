@@ -6,6 +6,19 @@
 
 {% block content %}
 
+cleared:  {{ clearance.clear }}<br>
+date: {{ clearance.date }}<br>
+desc: {{ clearance.desc }}<br>
+
+{% if list %}
+
+{% else %}
+    no items
+{% endif %}
+
+<br>
+<a class='button' href='edit/'>edit</a>
+
 
 {% endblock %}
 

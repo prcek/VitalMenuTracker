@@ -6,6 +6,64 @@
 
 {% block content %}
 
+<form method="post" name="c_form">
+{{ c_form.as_p }}
+<input type="hidden" name="action" value="update">
+<input class="button" type="submit" value="update">
+</form>
+
+
+<br>
+
+{% if c_list %}
+    <table>
+    <tr><th>id</th><th>purpose</th><th>account</th><th>cost</th><th>desc</th></tr>
+    {% for i in c_list %}
+        <tr><td>{{ i.key.id }}</td><td>{{i.purpose}}</td><td>{{i.account.name}}</td><td>{{i.cost}}</td><td>{{i.desc}}</td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no items
+{% endif %}
+<br>
+<table>
+<tr><th>type</th><th>cost</th></tr>
+<tr><td>pick</td><td>{{cost_pick}}</td></tr>
+<tr><td>give</td><td>{{cost_give}}</td></tr>
+{% if cost_diff %}
+<tr><td>diff</td><td class=error>{{cost_diff}}</td></tr>
+{% endif %}
+</table>
+<br>
+<form method="post" name="c_pick_form">
+{{ c_pick_form.as_p }}
+<input type="hidden" name="action" value="pick_item">
+<input class="button" type="submit" value="add">
+</form>
+
+
+<br>
+<form method="post" name="c_give_form">
+{{ c_give_form.as_p }}
+<input type="hidden" name="action" value="give_item">
+<input class="button" type="submit" value="add">
+</form>
+
+<br>
+<form method="post" name="c_del_form">
+{{ c_del_form.as_p }}
+<input type="hidden" name="action" value="del_item">
+<input class="button" type="submit" value="delete">
+</form>
+
+<br>
+<form method="post" name="c_clear_form">
+{{ c_clear_form.as_p }}
+<input type="hidden" name="action" value="clear_item">
+<input class="button" type="submit" value="clear">
+</form>
+
+
 
 {% endblock %}
 

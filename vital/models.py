@@ -30,6 +30,7 @@ class OrderItem(BaseModel):
     extra = db.BooleanProperty()
     owner_name = db.StringProperty()
     owner_surname = db.StringProperty()
+    clearance_item_key = db.ReferenceProperty()
     
 
 #csv format - [count, date(dd.mm.yyyy), name, cost, name, surname]
@@ -51,10 +52,14 @@ class OrderItem(BaseModel):
             return '[%s] %s %s %d' % (self.key().id(),self.date,self.name,self.cost)
         else:
             return '%s %s %d' % (self.date,self.name,self.cost)
+    def as_select_string(self):
+        return '[%s] %s %s %d' % (self.key().id(),self.date,self.name,self.cost)
+         
 
 
 class Clearance(BaseModel):
     date = db.DateProperty()        
+    desc = db.StringProperty()
     clear = db.BooleanProperty()
       
 
@@ -64,6 +69,11 @@ class ClearanceItem(BaseModel):
     account = db.ReferenceProperty(Account)
     transaction = db.ReferenceProperty(Transaction)
     order_item = db.ReferenceProperty(OrderItem)
+    cost = db.IntegerProperty()
+    desc = db.StringProperty()
+
+    def as_select_string(self):
+        return '[%s] %s %d %s' % (self.key().id(),self.purpose,self.cost,self.desc)
     
      
     
