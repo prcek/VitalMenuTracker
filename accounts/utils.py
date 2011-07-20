@@ -32,7 +32,7 @@ def getDetailAccountReport(account_id=None):
 
     report = report + '\nAccount:\n'
     report = report + account.getReportInfo()
-    report = report + '\n\nLast 10 transactions: [id;date;amount;desc]\n"' 
+    report = report + '\n\nLast 10 transactions: [id;date;amount;desc]\n' 
 
     transaction_list = Transaction.objects.all().ancestor(account).order('-create_date').fetch(10)
     for transaction in transaction_list:
