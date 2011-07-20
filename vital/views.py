@@ -7,6 +7,7 @@ from utils.data import CSVBlobReader
 from google.appengine.ext.blobstore import BlobNotFoundError
 from vital.models import OrderGroup,Order,OrderItem,Clearance,ClearanceItem
 from accounts.models import Account
+from utils.config import getConfig
 
 
 import logging
@@ -231,7 +232,11 @@ def clearance_edit(request, clearance_id):
         raise Http404
 
 
-    order_item_query = OrderItem.objects.all().filter('date =', clearance.date).filter('clearance_item_key =', None)
+    if getConfig('CLEARANCE_ALL_ORDER_ITEMS',0):
+        logging.info('showing all order items!')
+        order_item_query = OrderItem.objects.all().filter('date =', clearance.date)
+    else:
+        order_item_query = OrderItem.objects.all().filter('date =', clearance.date).filter('clearance_item_key =', None)
 
     c_pick_form = None
     c_give_form = None

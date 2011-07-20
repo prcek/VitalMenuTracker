@@ -19,4 +19,5 @@ def setupConfig():
     createConfig('REPORT_DAILY_SUMMARY','1')    
     createConfig('REPORT_DAILY_TRANSACTIONS','1')
     createConfig('PDF_TEST_TEXT',u'Příliš žluťoučký kůň úpěl ďábelské ódy (.CZ?!)')
+    createConfig('CLEARANCE_ALL_ORDER_ITEMS','1')
     
