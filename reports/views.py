@@ -27,9 +27,9 @@ def task_one_trans_report(request,account_id=None):
     if account is None:
         raise Http404
     logging.info('do_one_trans_report(%s)' % (account_id))
-    account_report = 'detail ' + getDetailAccountReport(account.key().id)
+    account_report = 'detail ' + getDetailAccountReport(account.key().id())
     logging.info('account report: "%s"' % account_report)
-    send_mail_to_user('VMTracker account id:%d report' % account_id, account_report, account_email)
+    send_mail_to_user('VMTracker account id:%d report' % int(account_id), account_report, account.report_email)
     return HttpResponse('ok')
 
 def task_accounts_report(request):
