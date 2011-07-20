@@ -60,6 +60,9 @@ def index(request):
     logging.info('student=%s'%student)
 
 
+    st = Student.objects.all().ancestor(course).get()
+
+    logging.info('ancestor test:%s'%st)
 
     return render_to_response('school/index.html', RequestContext(request))
 
