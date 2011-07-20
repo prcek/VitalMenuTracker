@@ -6,7 +6,7 @@ from django.template import RequestContext,Context, loader
 from utils.data import CSVBlobReader
 from google.appengine.ext.blobstore import BlobNotFoundError
 from vital.models import OrderGroup,Order,OrderItem,Clearance,ClearanceItem
-from accounts.models import Account
+from accounts.models import Account,Transaction
 from utils.config import getConfig
 from google.appengine.api import taskqueue
 
@@ -257,7 +257,7 @@ def clearance_edit(request, clearance_id):
         logging.info('showing all order items!')
         order_item_query = OrderItem.objects.all().filter('date =', clearance.date)
     else:
-        order_item_query = OrderItem.objects.all().filter('date =', clearance.date).filter('clearance_item_key =', None)
+        order_item_query = OrderItem.objects.all().filter('date =', clearance.date).filter('clearance_item_ref =', None)
 
     c_pick_form = None
     c_give_form = None
@@ -299,7 +299,7 @@ def clearance_edit(request, clearance_id):
                 ci.purpose='pick'
                 ci.save()
 
-                order_item.clearance_item_key = ci.key()
+                order_item.clearance_item_ref = ci.key()
                 order_item.save() 
 
                 c_pick_form = None
@@ -369,7 +369,7 @@ def clearance_edit(request, clearance_id):
                     raise Http404
                 if not (clearance_item.order_item is None):
                     logging.info('unmark %s'%clearance_item.order_item)
-                    clearance_item.order_item.clearance_item_key=None
+                    clearance_item.order_item.clearance_item_ref=None
                     clearance_item.order_item.save()
                 clearance_item.delete()
                 c_del_form = None
@@ -472,7 +472,65 @@ def task_do_clearance(request, clearance_id):
         raise Http404
 
     logging.info('clearance = %s'%clearance)
-   
+
+
+         
+    items = ClearanceItem.objects.all().ancestor(clearance)
+    for i in items:
+        logging.info('i=%s'%i) 
+        if not (i.transaction_item is None):
+            logging.info('has transaction...')
+            if not i.clear:
+                logging.info('but,not clear...')
+                i.clear = True
+                i.save()
+                logging.info('cleared')
+        else:
+            tr = Transaction.objects.all().filter('clearance_item_key =', i.key()).get()
+            if not (tr is None):
+                logging.info('corresponding transaction found (%s)'%tr)
+                i.transaction_item=tr
+                logging.info('linked')
+            else:
+                logging.info('no corresponding transaction found')
+                tr = Transaction(parent=i.account)
+                tr.setDate()
+                tr.clearance_item_key = i.key()
+                if i.purpose == 'pick':
+                    logging.info('pick item')
+                    tr.purpose = 'payment'
+                    tr.order_item_key = i.order_item.key()
+                    tr.amount = -i.cost
+                    tr.desc = i.desc
+                elif i.purpose == 'give':
+                    logging.info('give item')
+                    tr.purpose = 'payment'
+                    tr.amount = -i.cost
+                    tr.desc = i.desc
+                elif i.purpose == 'deposit':  
+                    logging.info('deposit item')
+                    tr.purpose = 'deposit'
+                    tr.amount = i.cost
+                    tr.desc = i.desc
+                elif i.purpose == 'load':
+                    logging.info('load item')
+                    tr.purpose = 'deposit'
+                    tr.amount = i.cost
+                    tr.desc = i.desc
+                else:
+                    logging.info('unexpected purpose (%s)'%i.purpose)
+                    tr = None
+
+                logging.info('new tr=%s'%tr)
+                if not (tr is None):
+                    tr.save()
+                    logging.info('tr save ok %s'%tr) 
+                    i.transaction_item = tr
+                    i.clear = True
+                
+            i.save()    
+            logging.info('new tr=%s'%tr)
+                
 
 
     logging.info('unlock clearance') 
@@ -482,6 +540,5 @@ def task_do_clearance(request, clearance_id):
     clearance.save()
 
     return HttpResponse('ok')
-
 
 

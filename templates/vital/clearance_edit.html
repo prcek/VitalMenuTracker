@@ -17,9 +17,9 @@
 
 {% if c_list %}
     <table>
-    <tr><th>id</th><th>purpose</th><th>account</th><th>cost</th><th>desc</th></tr>
+    <tr><th>id</th><th>purpose</th><th>account</th><th>cost</th><th>clear</th><th>desc</th></tr>
     {% for i in c_list %}
-        <tr><td>{{ i.key.id }}</td><td>{{i.purpose}}</td><td>{{i.account.name}}</td><td>{{i.cost}}</td><td>{{i.desc}}</td></tr>
+        <tr><td>{{ i.key.id }}</td><td>{{i.purpose}}</td><td>{{i.account.name}}</td><td>{{i.cost}}</td><td>{{i.clear}}</td><td>{{i.desc}}</td></tr>
     {% endfor %}
     </table>
 {% else %}

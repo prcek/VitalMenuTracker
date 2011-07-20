@@ -30,7 +30,7 @@ class OrderItem(BaseModel):
     extra = db.BooleanProperty(default=False)
     owner_name = db.StringProperty()
     owner_surname = db.StringProperty()
-    clearance_item_key = db.ReferenceProperty(default=None)
+    clearance_item_ref = db.ReferenceProperty(default=None)
     
 
 #csv format - [count, date(dd.mm.yyyy), name, cost, name, surname]
@@ -68,7 +68,7 @@ class ClearanceItem(BaseModel):
     purpose = db.StringProperty(choices=['pick','give','deposit','load'])
     clear = db.BooleanProperty(default=False) 
     account = db.ReferenceProperty(Account)
-    transaction = db.ReferenceProperty(Transaction)
+    transaction_item = db.ReferenceProperty(Transaction)
     order_item = db.ReferenceProperty(OrderItem)
     cost = db.IntegerProperty()
     desc = db.StringProperty()

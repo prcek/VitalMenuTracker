@@ -48,8 +48,9 @@ class Account(BaseModel):
         return "[%d] %s - %s" % (self.key().id(), self.purpose, self.name)
 
 class Transaction(BaseModel):
-    counterAccount = db.ReferenceProperty(Account)
-    orderItem = db.ReferenceProperty()
+    counter_account_key = db.ReferenceProperty(collection_name='counter_account_key')
+    order_item_key = db.ReferenceProperty(collection_name='order_item_key')
+    clearance_item_key = db.ReferenceProperty(collection_name='clearance_item_key')
     amount = db.IntegerProperty()
     create_date = db.DateTimeProperty() 
     desc = db.StringProperty() 
