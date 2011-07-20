@@ -64,7 +64,7 @@ class Clearance(BaseModel):
       
 
 class ClearanceItem(BaseModel):
-    purpose = db.StringProperty(choices=['pick','give'])
+    purpose = db.StringProperty(choices=['pick','give','deposit','load'])
     clear = db.BooleanProperty() 
     account = db.ReferenceProperty(Account)
     transaction = db.ReferenceProperty(Transaction)

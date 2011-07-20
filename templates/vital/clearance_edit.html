@@ -34,6 +34,17 @@
 <tr><td>diff</td><td class=error>{{cost_diff}}</td></tr>
 {% endif %}
 </table>
+
+<br>
+<table>
+<tr><th>type</th><th>cost</th></tr>
+<tr><td>deposit</td><td>{{cost_deposit}}</td></tr>
+<tr><td>load</td><td>{{cost_load}}</td></tr>
+{% if cost_put_diff %}
+<tr><td>diff</td><td class=error>{{cost_put_diff}}</td></tr>
+{% endif %}
+</table>
+
 <br>
 <form method="post" name="c_pick_form">
 {{ c_pick_form.as_p }}
@@ -61,6 +72,20 @@
 {{ c_clear_form.as_p }}
 <input type="hidden" name="action" value="clear_item">
 <input class="button" type="submit" value="clear">
+</form>
+
+<br>
+<form method="post" name="c_load_form">
+{{ c_load_form.as_p }}
+<input type="hidden" name="action" value="load_item">
+<input class="button" type="submit" value="load">
+</form>
+
+<br>
+<form method="post" name="c_deposit_form">
+{{ c_deposit_form.as_p }}
+<input type="hidden" name="action" value="deposit_item">
+<input class="button" type="submit" value="deposit">
 </form>
 
 

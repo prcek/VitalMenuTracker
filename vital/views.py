@@ -213,6 +213,25 @@ class ClearanceItemGiveForm(forms.Form):
         self.fields['account_id'].choices=[(a.key(),a.as_select_string()) for a in accounts]
         self.fields['cost'].initial = cost
 
+class ClearanceItemLoadForm(forms.Form):
+    account_id = forms.ChoiceField()
+    cost = forms.IntegerField()
+    desc = forms.CharField(required=False)
+    def __init__(self, data = None, accounts = [], cost = 0):
+        super(self.__class__,self).__init__(data)
+        self.fields['account_id'].choices=[(a.key(),a.as_select_string()) for a in accounts]
+        self.fields['cost'].initial = cost
+
+class ClearanceItemDepositForm(forms.Form):
+    account_id = forms.ChoiceField()
+    cost = forms.IntegerField()
+    desc = forms.CharField(required=False)
+    def __init__(self, data = None, accounts = [], cost = 0):
+        super(self.__class__,self).__init__(data)
+        self.fields['account_id'].choices=[(a.key(),a.as_select_string()) for a in accounts]
+        self.fields['cost'].initial = cost
+
+
 class ClearanceItemDelForm(forms.Form):
     item_id = forms.ChoiceField()
     def __init__(self, data = None,items = []):
@@ -242,6 +261,8 @@ def clearance_edit(request, clearance_id):
     c_give_form = None
     c_del_form = None
     c_clear_form = None
+    c_load_form = None
+    c_deposit_form = None
 
     pick_accounts = Account.objects.all().filter('purpose =', 'user').fetch(100)
     give_accounts = Account.objects.all().filter('purpose =', 'credit').fetch(100)
@@ -298,6 +319,44 @@ def clearance_edit(request, clearance_id):
   
                 c_give_form = None
 
+        if request.POST['action'] == 'load_item':
+            c_load_form = ClearanceItemLoadForm(request.POST, give_accounts)
+            if c_load_form.is_valid():
+                logging.info('c_load_form is valid!')
+                account = Account.get(c_load_form.cleaned_data['account_id'])
+                logging.info('account = %s'%account)
+                if account is None:
+                    raise Http404
+
+                ci = ClearanceItem(parent=clearance)
+                ci.account = account
+                ci.cost = int(c_load_form.cleaned_data['cost'])
+                ci.purpose='load'
+                ci.desc = c_load_form.cleaned_data['desc']
+                ci.save()
+  
+                c_load_form = None
+
+        if request.POST['action'] == 'deposit_item':
+            c_deposit_form = ClearanceItemDepositForm(request.POST, pick_accounts)
+            if c_deposit_form.is_valid():
+                logging.info('c_deposit_form is valid!')
+                account = Account.get(c_deposit_form.cleaned_data['account_id'])
+                logging.info('account = %s'%account)
+                if account is None:
+                    raise Http404
+
+                ci = ClearanceItem(parent=clearance)
+                ci.account = account
+                ci.cost = int(c_deposit_form.cleaned_data['cost'])
+                ci.purpose='deposit'
+                ci.desc = c_deposit_form.cleaned_data['desc']
+                ci.save()
+  
+                c_deposit_form = None
+
+
+
         if request.POST['action'] == 'del_item':
             c_list = ClearanceItem.objects.all().ancestor(clearance).fetch(100)
             c_del_form = ClearanceItemDelForm(request.POST, items = c_list)
@@ -331,7 +390,11 @@ def clearance_edit(request, clearance_id):
     c_list = ClearanceItem.objects.all().ancestor(clearance).fetch(100)
     cost_pick = sum([i.cost for i in c_list if i.purpose=='pick'])
     cost_give = sum([i.cost for i in c_list if i.purpose=='give'])
+    cost_load = sum([i.cost for i in c_list if i.purpose=='load'])
+    cost_deposit = sum([i.cost for i in c_list if i.purpose=='deposit'])
+ 
     cost_diff = cost_pick - cost_give
+    cost_put_diff = cost_deposit - cost_load
     logging.info('cost_pick=%d, cost_give=%d'%(cost_pick,cost_give))
 
     if c_pick_form is None:
@@ -347,8 +410,22 @@ def clearance_edit(request, clearance_id):
     if c_clear_form is None:
         c_clear_form = ClearanceItemClearForm(items = c_list)
 
+    if c_load_form is None:
+        c_load_form = ClearanceItemLoadForm(accounts=give_accounts, cost = cost_put_diff)
+    
+    if c_deposit_form is None:
+        c_deposit_form = ClearanceItemDepositForm(accounts=pick_accounts)
 
-    return render_to_response('vital/clearance_edit.html', RequestContext(request, {'c_form':c_form, 'c_list':c_list, 'c_pick_form': c_pick_form, 'c_give_form': c_give_form, 'c_del_form':c_del_form, 'cost_pick':cost_pick, 'cost_give':cost_give, 'cost_diff':cost_diff, 'c_clear_form':c_clear_form}))
+
+
+
+
+    return render_to_response('vital/clearance_edit.html', RequestContext(request, 
+            {'c_form':c_form, 'c_list':c_list, 'c_pick_form': c_pick_form, 'c_give_form': c_give_form, 'c_del_form':c_del_form, 
+             'cost_pick':cost_pick, 'cost_give':cost_give, 'cost_diff':cost_diff, 'c_clear_form':c_clear_form,
+             'c_load_form':c_load_form, 'c_deposit_form':c_deposit_form,
+             'cost_load':cost_load, 'cost_deposit':cost_deposit, 'cost_put_diff':cost_put_diff,
+            }))
 
    
 
