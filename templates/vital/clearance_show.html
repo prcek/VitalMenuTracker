@@ -7,6 +7,8 @@
 {% block content %}
 
 cleared:  {{ clearance.clear }}<br>
+status:  {{ clearance.status }}<br>
+lock:  {{ clearance.lock }}<br>
 date: {{ clearance.date }}<br>
 desc: {{ clearance.desc }}<br>
 
@@ -18,6 +20,7 @@ desc: {{ clearance.desc }}<br>
 
 <br>
 <a class='button' href='edit/'>edit</a>
+<a class='button' href='commit/'>commit</a>
 
 
 {% endblock %}

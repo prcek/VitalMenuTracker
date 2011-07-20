@@ -8,9 +8,9 @@
 
 {% if list %}
     <table>
-    <tr><th>id</th><th>date</th><th>clear</th><th>desc</th><th>actions</th></tr>
+    <tr><th>id</th><th>date</th><th>clear</th><th>lock</th><th>status</th><th>desc</th><th>actions</th></tr>
     {% for c in list %}
-        <tr><td>{{c.key.id}}</td><td>{{c.date}}</td><td>{{c.clear}}</td><td>{{c.desc}}</td><td><a class='button' href='{{c.key.id}}/'>show</a>&nbsp;<a class='button' href='{{c.key.id}}/edit/'>edit</a></td></tr>
+        <tr><td>{{c.key.id}}</td><td>{{c.date}}</td><td>{{c.clear}}</td><td>{{c.lock}}</td><td>{{c.status}}</td><td>{{c.desc}}</td><td><a class='button' href='{{c.key.id}}/'>show</a>&nbsp;<a class='button' href='{{c.key.id}}/edit/'>edit</a></td></tr>
     {% endfor %}
     </table>
 

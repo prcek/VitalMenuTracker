@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     (r'^tasks/register_csv_order/(?P<file_key>[^/]+)/?$', 'vital.views.register_csv_order'),
     (r'^tasks/mail_transaction_report/(?P<account_id>\d+)/$', 'reports.views.task_one_trans_report'),
     (r'^tasks/mail_accounts_report/$', 'reports.views.task_accounts_report'),
+    (r'^tasks/do_clearance/(?P<clearance_id>\d+)/$', 'vital.views.task_do_clearance'),
     (r'^utils/setup/$', 'utils.setup.setup'),
     (r'^$', 'accounts.views.goHome'),
 

@@ -8,6 +8,8 @@ from google.appengine.ext.blobstore import BlobNotFoundError
 from vital.models import OrderGroup,Order,OrderItem,Clearance,ClearanceItem
 from accounts.models import Account
 from utils.config import getConfig
+from google.appengine.api import taskqueue
+
 
 
 import logging
@@ -442,4 +444,44 @@ def clearance_create(request):
         form = ClearanceForm()
 
     return render_to_response('vital/clearance_create.html', RequestContext(request, {'form':form}))
+
+def clearance_commit(request, clearance_id):
+    clearance = Clearance.get_by_id(int(clearance_id))
+    if clearance is None:
+        raise Http404
+
+    logging.info('clearance=%s'%clearance)
+
+    if clearance.lock:
+        info = 'clearance is locked!'
+    else:
+        clearance.lock = True
+        clearance.save()
+        logging.info('add task for "do_clearance(%d)"' % clearance.key().id())
+        taskqueue.add(url='/tasks/do_clearance/%s/'%clearance.key().id(), method='GET')
+        info = 'task add ok'
+    
+
+    return render_to_response('vital/clearance_commit.html', RequestContext(request, {'clearance':clearance, 'info':info}))
+
+
+def task_do_clearance(request, clearance_id):
+    logging.info('task do clearance - clearance_id=%s'%clearance_id)
+    clearance = Clearance.get_by_id(int(clearance_id))
+    if clearance is None:
+        raise Http404
+
+    logging.info('clearance = %s'%clearance)
+   
+
+
+    logging.info('unlock clearance') 
+    clearance.status = 'closed'
+    clearance.lock = False
+    clearance.clear = True
+    clearance.save()
+
+    return HttpResponse('ok')
+
+
 

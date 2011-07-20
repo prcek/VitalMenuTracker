@@ -25,12 +25,12 @@ class OrderItem(BaseModel):
     date = db.DateProperty()
     name = db.StringProperty()
     cost = db.IntegerProperty()
-    undo_request = db.BooleanProperty()
-    deleted = db.BooleanProperty()
-    extra = db.BooleanProperty()
+    undo_request = db.BooleanProperty(default=False)
+    deleted = db.BooleanProperty(default=False)
+    extra = db.BooleanProperty(default=False)
     owner_name = db.StringProperty()
     owner_surname = db.StringProperty()
-    clearance_item_key = db.ReferenceProperty()
+    clearance_item_key = db.ReferenceProperty(default=None)
     
 
 #csv format - [count, date(dd.mm.yyyy), name, cost, name, surname]
@@ -60,12 +60,13 @@ class OrderItem(BaseModel):
 class Clearance(BaseModel):
     date = db.DateProperty()        
     desc = db.StringProperty()
-    clear = db.BooleanProperty()
-      
+    clear = db.BooleanProperty(default=False)
+    lock = db.BooleanProperty(default=False)
+    status = db.StringProperty(choices=['new','clearing','closed','error'], default='new')
 
 class ClearanceItem(BaseModel):
     purpose = db.StringProperty(choices=['pick','give','deposit','load'])
-    clear = db.BooleanProperty() 
+    clear = db.BooleanProperty(default=False) 
     account = db.ReferenceProperty(Account)
     transaction = db.ReferenceProperty(Transaction)
     order_item = db.ReferenceProperty(OrderItem)
