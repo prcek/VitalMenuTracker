@@ -4,6 +4,33 @@
 
 {% block content %}
 
-    school
+
+{% if dump_seasons %}
+    seasons
+    {% with dump_seasons as seasons %}
+        {% include "school/table_seasons.html" %}
+    {% endwith %}
+{% endif %}
+
+{% if dump_categories %}
+    categories
+    {% with dump_categories as categories %}
+        {% include "school/table_categories.html" %}
+    {% endwith %}
+{% endif %}
+
+{% if dump_courses %}
+    courses
+    {% with dump_courses as courses %}
+        {% include "school/table_courses.html" %}
+    {% endwith %}
+{% endif %}
+
+
+
+<br>
+<a class='button' href='?action=dump'>dump</a>
+<a class='button' href='?action=setup'>setup</a>
+<a class='button' href='?action=reset'>reset</a>
 
 {% endblock %}

@@ -67,6 +67,25 @@ def index(request):
     return render_to_response('school/index.html', RequestContext(request))
 
 def test_index(request):
+    action = request.GET.get('action','index')
+    logging.info('action = %s'%action)
+    if action == 'index':
+        pass
+    elif action == 'setup':
+        pass
+    elif action == 'reset':
+        pass
+    elif action == 'dump':
+        dump_seasons = Season.objects.all()
+        dump_categories = Category.objects.all()
+        dump_courses = Course.objects.all()
+        return render_to_response('school/test_index.html', RequestContext(request, {
+            'dump_seasons':dump_seasons,
+            'dump_categories':dump_categories,
+            'dump_courses':dump_courses,
+        }))
+        
+    
     return render_to_response('school/test_index.html', RequestContext(request))
 
 def courses_index(request):
