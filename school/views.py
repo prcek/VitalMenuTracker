@@ -10,6 +10,7 @@ from utils.mail import send_mail_to_admins, send_mail_to_user
 from utils.config import getConfig
 
 from google.appengine.api import taskqueue
+from google.appengine.ext import db
 from school.models import Season,Category,Course,Group,Student
 
 import logging
@@ -72,13 +73,45 @@ def test_index(request):
     if action == 'index':
         pass
     elif action == 'setup':
-        pass
+        season_1 = Season()
+        season_1.name = "2011/12"
+        season_1.save()
+        season_2 = Season()
+        season_2.name = "2012/13"
+        season_2.save()
+
+        cat_1 = Category(parent = season_1)
+        cat_1.name = 'cat1'
+        cat_1.save()
+        cat_2 = Category(parent = season_1)
+        cat_2.name = 'cat2'
+        cat_2.save()
+        cat_3 = Category(parent = season_2)
+        cat_3.name = 'cat3'
+        cat_3.save()
+
+        course_1 = Course(parent = cat_1)
+        course_1.code = 'C1'
+        course_1.save()
+        course_2 = Course(parent = cat_1)
+        course_2.code = 'C2'
+        course_2.save()
+        course_3 = Course(parent = cat_2)
+        course_3.code = 'C3'
+        course_3.save()
+        course_4 = Course(parent = cat_3)
+        course_4.code = 'C4'
+        course_4.save()
+ 
     elif action == 'reset':
+        db.delete(Season.all(keys_only=True))
+        db.delete(Category.all(keys_only=True))
+        db.delete(Course.all(keys_only=True))
         pass
     elif action == 'dump':
-        dump_seasons = Season.objects.all()
-        dump_categories = Category.objects.all()
-        dump_courses = Course.objects.all()
+        dump_seasons = Season.all()
+        dump_categories = Category.all()
+        dump_courses = Course.all()
         return render_to_response('school/test_index.html', RequestContext(request, {
             'dump_seasons':dump_seasons,
             'dump_categories':dump_categories,
