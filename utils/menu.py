@@ -46,6 +46,10 @@ app_menu = [
     {'name':'school', 'url':'/school/', 'access':'a',
      'submenu': [
                     { 'name':'index', 'url':'/school/', 'access':'a' },
+                    { 'name':'test', 'url':'/school/test/', 'access':'a' },
+                    { 'name':'courses', 'url':'/school/courses/', 'access':'a' },
+                    { 'name':'students', 'url':'/school/students/', 'access':'a' },
+                    { 'name':'enrolment', 'url':'/school/enrolment/', 'access':'a' },
                 ]
     },
 

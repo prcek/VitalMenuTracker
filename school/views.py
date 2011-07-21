@@ -66,3 +66,18 @@ def index(request):
 
     return render_to_response('school/index.html', RequestContext(request))
 
+def test_index(request):
+    return render_to_response('school/test_index.html', RequestContext(request))
+
+def courses_index(request):
+    return render_to_response('school/courses_index.html', RequestContext(request))
+
+def students_index(request):
+    return render_to_response('school/students_index.html', RequestContext(request))
+
+def enrolment_index(request):
+    return render_to_response('school/enrolment_index.html', RequestContext(request))
+
+
+
+
