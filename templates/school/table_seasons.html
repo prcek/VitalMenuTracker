@@ -1,6 +1,6 @@
 <table>
 <tr><th>id</th><th>name</th></tr>
 {% for season in seasons %}
-<tr><td>{{season.key.id}}</td><td>{{season.name}}</td></tr>
+<tr><td>{{season.key|gae_key}}</td><td>{{season.name}}</td></tr>
 {% endfor %}
 </table>

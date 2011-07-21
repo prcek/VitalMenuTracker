@@ -1,6 +1,6 @@
 <table>
 <tr><th>id</th><th>name</th></tr>
 {% for course in courses %}
-<tr><td>{{course.key.id}}</td><td>{{course.code}}</td></tr>
+<tr><td>{{course.key|gae_key}}</td><td>{{course.code}}</td></tr>
 {% endfor %}
 </table>

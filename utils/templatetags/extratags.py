@@ -82,3 +82,10 @@ class RenderUserNode(template.Node):
 @register.tag
 def render_user(parser, token):
     return RenderUserNode() 
+
+
+
+@register.filter
+def gae_key(key):
+    list = key.to_path()
+    return "->".join([ "[%s/%s]"%(a,b) for (a,b) in zip(list[::2],list[1::2])])
