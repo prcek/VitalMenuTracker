@@ -71,7 +71,8 @@ def fix_encoding(message):
         if isinstance(message.body, EncodedPayload):
             logging.info(message.body.encoding)
             if message.body.encoding == '8bit':
-                message.body.encoding = '7bit' 
+                message.body.payload = u'xxx' #message.body.payload.decode('utf-8')
+                message.body.encoding = 'utf-8' 
                 logging.info('Body encoding fixed')
     
     if hasattr(message, 'html'):    
@@ -79,14 +80,14 @@ def fix_encoding(message):
         if isinstance(message.html, EncodedPayload):
             logging.info(message.html.encoding)    
             if message.html.encoding == '8bit':
-                message.html.encoding = '7bit' 
+                message.html.encoding = 'utf-8' 
                 logging.info('HTML encoding fixed')
     if hasattr(message, 'attachments'):
         for file_name, data in _attachment_sequence(message.attachments):
             if isinstance(data, EncodedPayload):
                 logging.info(data.encoding)
                 if data.encoding == '8bit':
-                    data.encoding = '7bit'
+                    data.encoding = 'utf-8'
                     logging.info('Attachment encoding fixed')
     return message
 
@@ -102,7 +103,7 @@ def parse_email(request, file_key):
 
     r = ""
     email = EmailMessage(data)
-    fix_encoding(email)     
+#    fix_encoding(email)     
     email.check_initialized()
     email.sender = getConfig("MAIL_TEST_FROM")
     email.to = getConfig("MAIL_TEST_TO")
