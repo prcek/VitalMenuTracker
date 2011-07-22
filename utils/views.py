@@ -284,6 +284,12 @@ def files_op(request, file_key):
         raise Http404
     return render_to_response('utils/file_op.html', RequestContext(request, { 'info': info }))
     
+@admin_required
+def config_setup(request):
+    from utils.config import setupConfig
+    setupConfig()
+    return HttpResponse("ok")
+
 
 def debugTest(request):
     debug = '+ěščřžýáíé'
