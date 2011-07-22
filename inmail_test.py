@@ -48,8 +48,9 @@ class LogSenderHandler(InboundMailHandler):
         logging.info("Received a message from: %s, to: %s" % (mail_message.sender, mail_message.to))
         logging.info("mail date: %s" % mail_message.date)
         logging.info("subject: %s" % mail_message.subject)
-
-        data = mail_message.to_mime_message().as_string(unixfrom=True)
+        
+        data = mail_message.original.as_string(unixfrom=True)
+        #data = mail_message.to_mime_message().as_string(unixfrom=True)
         logging.info(data)
 
         fk = store_raw_data_as_blob(data,'-email-','text/plain')
