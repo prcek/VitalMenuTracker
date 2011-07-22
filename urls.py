@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     (r'^tasks/mail_transaction_report/(?P<account_id>\d+)/$', 'reports.views.task_one_trans_report'),
     (r'^tasks/mail_accounts_report/$', 'reports.views.task_accounts_report'),
     (r'^tasks/do_clearance/(?P<clearance_id>\d+)/$', 'vital.views.task_do_clearance'),
+    (r'^tasks/incoming_email/(?P<file_key>[^/]+)/?$', 'emails.views.incoming_email'),
     (r'^utils/setup/$', 'utils.setup.setup'),
     (r'^$', 'accounts.views.goHome'),
 

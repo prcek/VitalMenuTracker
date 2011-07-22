@@ -35,6 +35,8 @@ def store_raw_data_as_blob(data,name,content_type):
 
 
 
+
+
 class LogSenderHandler(InboundMailHandler):
 
 
@@ -47,9 +49,15 @@ class LogSenderHandler(InboundMailHandler):
         logging.info("mail date: %s" % mail_message.date)
         logging.info("subject: %s" % mail_message.subject)
 
-        data = mail_message.to_mime_message()
+        data = mail_message.to_mime_message().as_string(unixfrom=True)
         logging.info(data)
 
+        fk = store_raw_data_as_blob(data,'-email-','text/plain')
+        if fk is None:
+            logging.warning("can't store blob - no BlobKey received")
+        else:
+            taskqueue.add(url='/tasks/incoming_email/%s/'%fk, method='GET')
+            logging.info("import task scheduled")
 
 def main():
     application = webapp.WSGIApplication([LogSenderHandler.mapping()], debug=True)

@@ -86,3 +86,8 @@ def parse_email(request, file_key):
     r = email.to_mime_message()
 
     return HttpResponse('parse ok - %s'%r)
+
+def incoming_email(request, file_key):
+    logging.info('processing incoming email %s'%file_key)
+
+    return HttpResponse("ok") 
