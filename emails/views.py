@@ -63,3 +63,24 @@ def emailGroupCreate(request):
     return render_to_response('emails/emailGroup.html', RequestContext(request, { 'form' : form }))
 
 
+def parse_email(request, file_key):
+    from utils.data import get_blob_data
+    from google.appengine.api.mail import EmailMessage
+    from utils.config import getConfig
+
+    data = get_blob_data(file_key)
+    if data is None:
+        raise Http404
+
+    r = ""
+    email = EmailMessage(data)
+    email.check_initialized()
+    email.sender = getConfig("MAIL_TEST_FROM")
+    email.to = getConfig("MAIL_TEST_TO")
+
+    if getConfig("MAIL_TEST",0) == 1:
+        email.send()
+
+    r = email.to_mime_message()
+
+    return HttpResponse('parse ok - %s'%r)

@@ -20,4 +20,8 @@ def setupConfig():
     createConfig('REPORT_DAILY_TRANSACTIONS','1')
     createConfig('PDF_TEST_TEXT',u'Příliš žluťoučký kůň úpěl ďábelské ódy (.CZ?!)')
     createConfig('CLEARANCE_ALL_ORDER_ITEMS','1')
+    createConfig('ADMIN_EMAIL','admin@domain.com') 
+    createConfig('MAIL_TEST_TO','user@domain.com') 
+    createConfig('MAIL_TEST_FROM','admin@domain.com') 
+    createConfig('MAIL_TEST','1') 
     

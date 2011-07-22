@@ -190,3 +190,13 @@ def decode_uploaded_file(fk,c):
     return blob_key
 
 
+def get_blob_data(fk):
+    blob_info = blobstore.BlobInfo.get(fk)
+    if not blob_info:
+        return None
+    
+    blob_reader = blob_info.open() 
+    data = blob_reader.read() 
+    return data
+    
+
