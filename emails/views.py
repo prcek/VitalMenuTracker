@@ -6,6 +6,7 @@ from django.template import RequestContext, Context, loader
 from django import forms
 import re
 import django
+import logging
 
 from emails.models import EMailList
 
@@ -78,7 +79,8 @@ def parse_email(request, file_key):
     email.sender = getConfig("MAIL_TEST_FROM")
     email.to = getConfig("MAIL_TEST_TO")
 
-    if getConfig("MAIL_TEST",0) == 1:
+    if getConfig("MAIL_TEST",0) == "1":
+        logging.info('sending email....')
         email.send()
 
     r = email.to_mime_message()
