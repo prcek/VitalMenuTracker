@@ -58,12 +58,12 @@ class LogSenderHandler(InboundMailHandler):
 #        data = mail_message.to_mime_message()
 #        logging.info(data)
 
-        if mail_message.subject.startswith('test'):
-            plaintext_bodies = mail_message.bodies('text/plain')
-            for c,b in plaintext_bodies:
-                fk = store_raw_data_as_blob(b.decode(),'test','text/plain')
-                plan_import_task(fk)
-            return
+#        if mail_message.subject.startswith('test'):
+#            plaintext_bodies = mail_message.bodies('text/plain')
+#            for c,b in plaintext_bodies:
+#                fk = store_raw_data_as_blob(b.decode(),'test','text/plain')
+#                plan_import_task(fk)
+#            return
         
         plaintext_bodies = mail_message.bodies('text/plain')
         for c,b in plaintext_bodies:
