@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+template {{et.name}}, data {{et.blob_info}}<br>
+
+<a class='button' href='test_send/'>test_send</a>
+<a class='button' href='edit/'>edit</a>
+<a class='button' href=''>reload</a>
+<br>
+
+
+<pre>{{et.data}}</pre>
+
+{% endblock %}
+

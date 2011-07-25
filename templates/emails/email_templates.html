@@ -1,0 +1,24 @@
+
+{% extends "base.html" %}
+
+{% block title %} email templates list {% endblock %}
+
+
+{% block content %}
+
+{% if list %}
+    <table>
+    <tr><th>id</th><th>name</th><th>blob</th><th>import email</th><th>open for import</th><th>actions</th></tr>
+    {% for t in list %}
+        <tr><td>{{t.key.id}}</td><td>{{t.name}}</td><td>{{t.blob_info}}</td><td>{{t.import_email}}</td><td>{{t.open_for_import}}</td>
+            <td><a class='button' href='{{t.key.id}}/'>show</a>&nbsp;<a class='button' href='{{t.key.id}}/edit/'>edit</a></td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no email template<br>
+{% endif %}
+    
+    <a class='button' href='create/'>create</a>
+    <a class='button' href=''>reload</a>
+{% endblock %}
+

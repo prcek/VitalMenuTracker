@@ -1,6 +1,7 @@
 from appengine_django.models import BaseModel
 from google.appengine.ext import db
 import re
+import os
 
 # Create your models here.
 class EMailList(BaseModel):
@@ -29,4 +30,16 @@ class EMailList(BaseModel):
         for e in sorted(s):
             self.emails.append(e)
                 
-            
+
+class EMailTemplate(BaseModel):
+    name = db.StringProperty()
+    data = db.BlobProperty()            
+    open_for_import = db.BooleanProperty()
+
+    def import_email(self):
+        return "import-email-%d@%s.%s"%(self.key().id(),os.environ['APPLICATION_ID'],'appspotmail.com') 
+
+    def blob_info(self):
+        if self.data is None:
+            return "no data"
+        return "size=%d"%len(self.data)

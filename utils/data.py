@@ -26,6 +26,23 @@ def store_raw_data_as_blob(data,name,content_type):
     files.finalize(file_name)
     blob_key = files.blobstore.get_blob_key(file_name)
     logging.info('file key:%s'%blob_key)
+
+#http://code.google.com/p/googleappengine/issues/detail?id=4872 
+#FIXME
+
+    if not blob_key:
+        logging.info('again....1')
+        time.sleep(1)
+        blob_key = files.blobstore.get_blob_key(file_name)
+
+    if not blob_key:
+        logging.info('again....2')
+        time.sleep(1)
+        blob_key = files.blobstore.get_blob_key(file_name)
+
+#endofhack 
+
+
     return blob_key
 
 def handle_uploaded_file(f):

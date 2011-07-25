@@ -3,7 +3,7 @@ from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template import RequestContext,Context, loader
 
-from utils.data import CSVBlobReader
+from utils.data import CSVBlobReader,store_raw_data_as_blob
 from google.appengine.ext.blobstore import BlobNotFoundError
 from vital.models import OrderGroup,Order,OrderItem,Clearance,ClearanceItem
 from accounts.models import Account,Transaction
@@ -128,6 +128,31 @@ def orders(request):
             o.item_list = items
 
     return render_to_response('vital/orders.html', RequestContext(request, { 'group_list': groups}))
+
+def process_incoming_email_order(mail_message):
+    logging.info('process_incoming_email_order')
+
+    plaintext_bodies = mail_message.bodies('text/plain')
+    for c,b in plaintext_bodies:
+        logging.info('%s' % b.decode())
+
+    if hasattr(mail_message, "attachments"):
+        for name,content in mail_message.attachments:
+            logging.info('attachment name %s'% name)
+            logging.info('attachment content %s'% content)
+            logging.info('attachment content charset %s'% content.charset)
+            if not content.charset:
+                content.charset='windows-1250'
+                logging.info('attachment content NEW charset %s'% content.charset)
+            logging.info('attachment decode %s'%content.decode())
+            if name.endswith('.csv'):
+                pass
+                fk = store_raw_data_as_blob(content.decode().encode('utf-8'),name,'text/csv')
+                taskqueue.add(url='/tasks/register_csv_order/%s/'%fk, method='GET')
+            else:
+                logging.info('no csv')
+    else:
+        logging.info('no attachment')
 
 
 def register_csv_order(request, file_key):

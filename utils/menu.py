@@ -8,7 +8,7 @@ app_menu = [
     {'name':'emails', 'url':'/emails/' , 'access':'u',
      'submenu': [
                     { 'name':'groups', 'url':'/emails/groups/' },
-                    { 'name':'create group', 'url':'/emails/groups/create/' },
+                    { 'name':'templates', 'url':'/emails/templates/' },
                 ]
     },
 

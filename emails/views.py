@@ -7,9 +7,16 @@ from django import forms
 import re
 import django
 import logging
+from email.utils import parseaddr
+from emails.models import EMailList,EMailTemplate
+from vital.views import process_incoming_email_order
 
-from emails.models import EMailList
+from utils.data import get_blob_data
+from google.appengine.api.mail import EmailMessage
+from utils.config import getConfig
 
+
+ 
 
 def index(request):
     return redirect('/emails/groups/')
@@ -93,10 +100,6 @@ def fix_encoding(message):
 
 
 def parse_email(request, file_key):
-    from utils.data import get_blob_data
-    from google.appengine.api.mail import EmailMessage
-    from utils.config import getConfig
-
     data = get_blob_data(file_key)
     if data is None:
         raise Http404
@@ -116,7 +119,126 @@ def parse_email(request, file_key):
 
     return HttpResponse('parse ok - %s'%r)
 
+def process_incoming_email_template(template_id, data):
+    logging.info('processing incoming email template')
+    et = EMailTemplate.get_by_id(int(template_id))
+    if et is None:
+        logging.info('template not found')
+        return
+
+    if not et.open_for_import:
+        logging.info('template is not open')
+        return
+
+    et.data = data
+    et.open_for_import = False
+
+    et.save()
+
+    logging.info('template updated and closed')
+ 
+
+
 def incoming_email(request, file_key):
     logging.info('processing incoming email %s'%file_key)
 
-    return HttpResponse("ok") 
+    data = get_blob_data(file_key)
+    if data is None:
+        raise Http404
+
+    logging.info('email fetch ok')
+    email = EmailMessage(data)
+    a_to = parseaddr(email.to)[1]
+    a_from = parseaddr(email.sender)[1]
+    logging.info('email.to=%s'%a_to) 
+    logging.info('email.sender=%s'%a_from) 
+
+    if re.match(r'^import-order@',a_to):
+        logging.info('import order')
+        process_incoming_email_order(email)
+        return HttpResponse("ok - import order")
+    r = re.match(r'^import-email-(\d+)@',a_to) 
+    if r:
+        logging.info('import email, id %s'%r.group(1))
+        process_incoming_email_template(r.group(1),data)
+        return HttpResponse("ok - import email")
+        
+
+    return HttpResponse("ok -ign") 
+
+
+class EMailTemplateForm(forms.ModelForm):
+    class Meta:
+        model = EMailTemplate
+        fields = ( 'name', 'open_for_import' )
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if len(data)==0:
+            raise forms.ValidationError('missing value')
+        return data
+
+
+def email_template(request):
+    email_templates = EMailTemplate.objects.all().fetch(100)
+    return render_to_response('emails/email_templates.html', RequestContext(request, { 'list': email_templates}))
+
+def email_template_show(request, template_id):
+    et = EMailTemplate.get_by_id(int(template_id))
+    if et is None:
+        raise Http404
+    return render_to_response('emails/email_template_show.html', RequestContext(request, { 'et': et}))
+
+
+def email_template_create(request):
+    if request.method == 'POST':
+        form = EMailTemplateForm(request.POST)
+        if form.is_valid():
+            et = EMailTemplate()
+            et.name = form.cleaned_data['name']
+            et.open_for_import = form.cleaned_data['open_for_import']
+            et.save()
+            logging.info('new email template: %s'%et)
+            return redirect('..')
+    else:
+        form = EMailTemplateForm()
+ 
+    return render_to_response('emails/email_template_create.html', RequestContext(request, { 'form' : form }))
+
+def email_template_edit(request, template_id):
+    et = EMailTemplate.get_by_id(int(template_id))
+    if et  is None:
+        raise Http404
+    
+    if request.method == 'POST':
+        form = EMailTemplateForm(request.POST)
+        if form.is_valid():
+            et.name = form.cleaned_data['name']
+            et.open_for_import = form.cleaned_data['open_for_import']
+            et.save()
+            return redirect('../..')
+    else:
+        form = EMailTemplateForm(instance=et)
+    return render_to_response('emails/email_template_edit.html', RequestContext(request, { 'form' : form}))
+
+
+class EMailAddressForm(forms.Form):
+    address = forms.EmailField(required=True)
+
+ 
+def email_template_test_send(request, template_id):
+    et = EMailTemplate.get_by_id(int(template_id))
+    if et  is None:
+        raise Http404
+
+    if request.method == 'POST':
+        form = EMailAddressForm(request.POST)
+        if form.is_valid():
+            to_a = form.cleaned_data['address']
+            logging.info('test send template id %d, to: %s', et.key().id(), to_a)
+            #TODO 
+            return redirect('..')
+    else:
+        form = EMailAddressForm()
+ 
+    return render_to_response('emails/email_template_test_send.html', RequestContext(request, { 'form' : form, 'et':et}))

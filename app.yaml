@@ -42,13 +42,13 @@ handlers:
   script: files.py
   login: admin
 
-- url: /_ah/mail/test.+
+- url: /_ah/mail/.+
   script: inmail_test.py
   login: admin
 
-- url: /_ah/mail/import.+
-  script: inmail.py
-  login: admin
+#- url: /_ah/mail/import.+
+#  script: inmail.py
+#  login: admin
 
 - url: /.*
   script: main.py
