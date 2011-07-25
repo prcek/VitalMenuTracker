@@ -14,6 +14,11 @@ urlpatterns = patterns('emails.views',
     (r'^templates/create/$', 'email_template_create'),
     
 
+    (r'^jobs/$', 'email_job'),
+    (r'^jobs/(?P<job_id>\d+)/$', 'email_job_show'),
+    (r'^jobs/create/$', 'email_job_create'),
+    
+
     (r'^parse_email/(?P<file_key>[^/]+)/?$', 'parse_email'),
 
 )

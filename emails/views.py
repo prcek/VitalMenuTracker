@@ -242,3 +242,16 @@ def email_template_test_send(request, template_id):
         form = EMailAddressForm()
  
     return render_to_response('emails/email_template_test_send.html', RequestContext(request, { 'form' : form, 'et':et}))
+
+
+def email_job(request):
+    pass
+
+def email_job_show(request,job_id):
+    pass
+
+def email_job_create(request):
+    pass
+
+
+

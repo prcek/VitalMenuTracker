@@ -9,6 +9,7 @@ app_menu = [
      'submenu': [
                     { 'name':'groups', 'url':'/emails/groups/' },
                     { 'name':'templates', 'url':'/emails/templates/' },
+                    { 'name':'jobs', 'url':'/emails/jobs/' },
                 ]
     },
 
