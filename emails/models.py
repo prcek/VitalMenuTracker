@@ -43,3 +43,25 @@ class EMailTemplate(BaseModel):
         if self.data is None:
             return "no data"
         return "size=%d"%len(self.data)
+
+
+class EMailJob(BaseModel):
+    name = db.StringProperty()
+    data_ref = db.ReferenceProperty()
+    status = db.StringProperty(choices=['new','prepare','send','done'], default='new')
+   
+class EMailJobData(BaseModel):
+    sender = db.StringProperty()
+    emails = db.StringListProperty() 
+    data = db.BlobProperty()            
+   
+class EMailSubJob(BaseModel):
+    emails_offset = db.IntegerProperty() 
+    emails_count = db.IntegerProperty()
+    status = db.StringProperty(choices=['new','prepare','send','done'], default='new')
+
+     
+    
+    
+     
+
