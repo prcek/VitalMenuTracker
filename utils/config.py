@@ -1,11 +1,24 @@
 # -*- coding: utf-8 -*-
 from utils.models import Config
+import logging
 
 def getConfig(name, dv=None):
     c = Config.objects.all().filter('name =',name).filter('active = ',True).get()
     if c:
         return c.value
     return dv 
+
+def getConfigBool(name, dv=None):
+    c = Config.objects.all().filter('name =',name).filter('active = ',True).get()
+    if c:
+        logging.info('Config: %s=%s'%(name,c.value))
+        if c.value=='1':
+            return True
+        else:
+            return False
+    
+    return dv
+        
 
 def createConfig(name,value):
     if getConfig(name) is None:
@@ -26,4 +39,5 @@ def setupConfig():
     createConfig('MAIL_TEST_TO','user@domain.com') 
     createConfig('MAIL_TEST_FROM','admin@domain.com') 
     createConfig('MAIL_TEST','0') 
+    createConfig('ENABLE_MAIL_JOBS','0')
     

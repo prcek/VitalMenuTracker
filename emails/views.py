@@ -15,7 +15,7 @@ from vital.views import process_incoming_email_order
 from utils.data import get_blob_data
 from google.appengine.api.mail import EmailMessage
 from google.appengine.api import taskqueue
-from utils.config import getConfig
+from utils.config import getConfig,getConfigBool
 
 
  
@@ -332,6 +332,13 @@ def email_job_start_task(request,job_id):
     return HttpResponse('ok')
 
 def fire_email_subjob(request,subjob_key):
+
+    if not getConfigBool('ENABLE_MAIL_JOBS',False):
+        logging.info('ENABLE_MAIL_JOBS != True, ignore') 
+        return HttpResponse('disabled')
+        
+
+
     sub_job = EMailSubJob.get(subjob_key)
     if sub_job is None:
         logging.info('no sub_job')
@@ -350,9 +357,9 @@ def fire_email_subjob(request,subjob_key):
 
     try:
         email = EmailMessage(job_data.data)
-        email.check_initialized()
         email.sender = job_data.sender
-        email.to = ''
+        email.to = job_data.sender
+        email.check_initialized()
     except:
         logging.info("can't init email! %s"%sys.exc_info()[1])
         sub_job.status = 'error'
@@ -370,7 +377,7 @@ def fire_email_subjob(request,subjob_key):
         logging.info('sending email to %s'%e)
         try:
             email.to = e
-            #email.send() 
+            email.send() 
             sub_job.emails_done.extend([e])
         except:
             logging.info("can't init email! %s"%sys.exc_info()[1])
