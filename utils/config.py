@@ -18,6 +18,18 @@ def getConfigBool(name, dv=None):
             return False
     
     return dv
+
+def getConfigInt(name, dv=None):
+    c = Config.objects.all().filter('name =',name).filter('active = ',True).get()
+    if c:
+        logging.info('Config: %s=%s'%(name,c.value))
+        try:
+            return int(c.value)
+        except:
+            logging.info('Config: no Integer value!')
+            return dv
+    
+    return dv
         
 
 def createConfig(name,value):

@@ -15,7 +15,7 @@ from vital.views import process_incoming_email_order
 from utils.data import get_blob_data
 from google.appengine.api.mail import EmailMessage
 from google.appengine.api import taskqueue
-from utils.config import getConfig,getConfigBool
+from utils.config import getConfig,getConfigBool,getConfigInt
 
 
  
@@ -113,7 +113,7 @@ def parse_email(request, file_key):
     email.sender = getConfig("MAIL_TEST_FROM")
     email.to = getConfig("MAIL_TEST_TO")
 
-    if getConfig("MAIL_TEST",0) == "1":
+    if getConfigBool("MAIL_TEST",False):
         logging.info('sending email....')
         email.send()
 
@@ -412,7 +412,7 @@ def email_job_create(request):
 
             job_data = EMailJobData(parent=job)             
             job_data.sender = getConfig('DEFAULT_SENDER')
-            job_data.split_count = int(getConfig('MAIL_SPLIT_COUNT','10'))
+            job_data.split_count = getConfigInt('MAIL_SPLIT_COUNT',10)
             job_data.emails = el.emails
             job_data.data =  et.data
 
