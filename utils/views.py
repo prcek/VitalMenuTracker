@@ -14,6 +14,7 @@ from emails.models import EMailList
 from utils.models import User, Config
 from utils.data import handle_uploaded_file, delete_uploaded_file, response_uploaded_file, decode_uploaded_file
 from utils.decorators import user_required, power_required,  admin_required
+from utils.config import getConfig
 
 import logging
 
@@ -290,9 +291,32 @@ def config_setup(request):
     setupConfig()
     return HttpResponse("ok")
 
+def captcha_test(request):
+    from utils.captcha import displayhtml,submit
+    last_result = '?'
+    if request.method == 'POST':
+        challenge = request.POST['recaptcha_challenge_field']
+        response  = request.POST['recaptcha_response_field']
+        remoteip  = os.environ['REMOTE_ADDR']
+        logging.info("challenge=%s, response=%s, remoteip=%s"%(challenge,response,remoteip))
+        resp = submit(challenge, response, getConfig('CAPTCHA_PRIVATE_KEY',''), remoteip)
+        logging.info(resp)
+        if resp.is_valid:
+            logging.info('OK')
+            last_result = 'OK'
+        else:
+            logging.info('ERROR')
+            last_result = 'ERROR'
+
+    html_captcha = displayhtml(getConfig('CAPTCHA_PUBLIC_KEY',''))
+    return render_to_response('utils/captcha.html', RequestContext(request, { 'html_captcha': html_captcha , 'last_result':last_result}))
+
 
 def debugTest(request):
     debug = '+ěščřžýáíé'
     from utils.pdf import pdftest
     pdftest()
     return HttpResponse(debug)
+
+
+

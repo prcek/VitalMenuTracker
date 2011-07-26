@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %} captcha test {% endblock %}
+
+{% block content %}
+
+{{last_result}}<br>
+<form method="post" name="form">
+{{ html_captcha|safe }}
+<input class="button" type="submit" value="test">
+</form>
+
+
+{% endblock %}
+

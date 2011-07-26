@@ -53,4 +53,6 @@ def setupConfig():
     createConfig('MAIL_TEST','0') 
     createConfig('ENABLE_MAIL_JOBS','0')
     createConfig('ENABLE_MAIL_TEST','0')
+    createConfig('CAPTCHA_PUBLIC_KEY','1234567890')
+    createConfig('CAPTCHA_PRIVATE_KEY','1234567890')
     

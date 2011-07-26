@@ -23,6 +23,7 @@ app_menu = [
                     { 'name':'help', 'url':'/utils/help/', 'access':'u' },
                     { 'name':'pdf_test', 'url':'/utils/pdf_test/', 'access':'a' },
                     { 'name':'csv_test', 'url':'/utils/csv_test/', 'access':'a' },
+                    { 'name':'captcha', 'url':'/utils/captcha/', 'access':'a' },
                     { 'name':'files', 'url':'/utils/files/', 'access':'a' },
                     { 'name':'debug', 'url':'/utils/debug/', 'access':'p'  },
                 ]
