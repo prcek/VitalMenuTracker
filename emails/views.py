@@ -5,6 +5,7 @@ from django.template import RequestContext, Context, loader
 #from google.appengine.ext.db.djangoforms import forms
 from django import forms
 import re
+import sys
 import django
 import logging
 from email.utils import parseaddr
@@ -237,7 +238,18 @@ def email_template_test_send(request, template_id):
         if form.is_valid():
             to_a = form.cleaned_data['address']
             logging.info('test send template id %d, to: %s', et.key().id(), to_a)
-            #TODO 
+            
+            try:
+                email = EmailMessage(et.data)
+                email.sender = getConfig('DEFAULT_SENDER')
+                email.to = to_a
+                email.check_initialized()
+                #email.send()
+            except:
+                logging.info("can't init email! %s"%sys.exc_info()[1])
+                return HttpResponse("can't init email - %s"%sys.exc_info()[1])
+
+
             return redirect('..')
     else:
         form = EMailAddressForm()
@@ -342,9 +354,9 @@ def fire_email_subjob(request,subjob_key):
         email.sender = job_data.sender
         email.to = ''
     except:
-        logging.info("can't init email!")
+        logging.info("can't init email! %s"%sys.exc_info()[1])
         sub_job.status = 'error'
-        sub_job.status_info = "can't init email message"
+        sub_job.status_info = "can't init email message - %s"%sys.exc_info()[1]
         sub_job.save()
         return HttpResponse('error')
 
@@ -361,6 +373,7 @@ def fire_email_subjob(request,subjob_key):
             #email.send() 
             sub_job.emails_done.extend([e])
         except:
+            logging.info("can't init email! %s"%sys.exc_info()[1])
             sub_job.emails_error.extend([e])
 
     sub_job.status = 'done'
