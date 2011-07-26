@@ -1,5 +1,6 @@
 from appengine_django.models import BaseModel
 from google.appengine.ext import db
+from google.appengine.api.app_identity import get_application_id
 import re
 import os
 
@@ -37,7 +38,7 @@ class EMailTemplate(BaseModel):
     open_for_import = db.BooleanProperty()
 
     def import_email(self):
-        return "import-email-%d@%s.%s"%(self.key().id(),os.environ['APPLICATION_ID'],'appspotmail.com') 
+        return "import-email-%d@%s.%s"%(self.key().id(),get_application_id(),'appspotmail.com') 
 
     def blob_info(self):
         if self.data is None:
