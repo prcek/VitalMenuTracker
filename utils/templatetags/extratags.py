@@ -89,3 +89,8 @@ def render_user(parser, token):
 def gae_key(key):
     list = key.to_path()
     return "->".join([ "[%s/%s]"%(a,b) for (a,b) in zip(list[::2],list[1::2])])
+
+@register.filter
+def email_list(l):
+    return ", ".join(l)
+

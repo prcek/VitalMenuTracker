@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+
+{% block title %} email job show {% endblock %}
+
+
+{% block content %}
+
+{% if job %}
+    job name: {{job.name}}<br>
+    job status: {{job.status}}<br>
+{% endif %}
+
+
+{% if sub_list %}
+    <table>
+    <tr><th>id</th><th>emails_offset</th><th>emails_count</th><th>emails</th><th>emails_done</th><th>emails_error</th><th>status</th><th>status_info</th></tr>
+    {% for j in sub_list %}
+        <tr>
+            <td>{{j.key.id}}</td><td>{{j.emails_offset}}</td><td>{{j.emails_count}}</td><td>{{j.emails|email_list}}</td><td>{{j.emails_done|email_list}}</td><td>{{j.emails_error|email_list}}</td><td>{{j.status}}</td><td>{{j.status_info}}
+       </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no email subjobs<br>
+{% endif %}
+    <a class='button' href='start/'>start</a>
+    <a class='button' href=''>reload</a>
+{% endblock %}
+

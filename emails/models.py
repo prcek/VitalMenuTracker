@@ -54,11 +54,17 @@ class EMailJobData(BaseModel):
     sender = db.StringProperty()
     emails = db.StringListProperty() 
     data = db.BlobProperty()            
+    split_count = db.IntegerProperty()
    
 class EMailSubJob(BaseModel):
     emails_offset = db.IntegerProperty() 
     emails_count = db.IntegerProperty()
-    status = db.StringProperty(choices=['new','prepare','send','done'], default='new')
+    emails = db.StringListProperty()
+    emails_done = db.StringListProperty()
+    emails_error = db.StringListProperty()
+    status = db.StringProperty(choices=['new','prepare','send','done','error'], default='new')
+    status_info = db.StringProperty()
+
 
      
     

@@ -21,6 +21,8 @@ def setupConfig():
     createConfig('PDF_TEST_TEXT',u'Příliš žluťoučký kůň úpěl ďábelské ódy (.CZ?!)')
     createConfig('CLEARANCE_ALL_ORDER_ITEMS','0')
     createConfig('ADMIN_EMAIL','admin@domain.com') 
+    createConfig('DEFAULT_SENDER','sender@domain.com')
+    createConfig('MAIL_SPLIT_COUNT','10')
     createConfig('MAIL_TEST_TO','user@domain.com') 
     createConfig('MAIL_TEST_FROM','admin@domain.com') 
     createConfig('MAIL_TEST','0') 

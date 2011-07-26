@@ -1,0 +1,24 @@
+
+{% extends "base.html" %}
+
+{% block title %} email job list {% endblock %}
+
+
+{% block content %}
+
+{% if list %}
+    <table>
+    <tr><th>id</th><th>name</th><th>status</th><th>actions</th></tr>
+    {% for j in list %}
+        <tr><td>{{j.key.id}}</td><td>{{j.name}}</td><td>{{j.status}}</td>
+            <td><a class='button' href='{{j.key.id}}/'>show</a></td></tr>
+    {% endfor %}
+    </table>
+{% else %}
+    no email jobs<br>
+{% endif %}
+    
+    <a class='button' href='create/'>create</a>
+    <a class='button' href=''>reload</a>
+{% endblock %}
+

@@ -16,6 +16,7 @@ urlpatterns = patterns('emails.views',
 
     (r'^jobs/$', 'email_job'),
     (r'^jobs/(?P<job_id>\d+)/$', 'email_job_show'),
+    (r'^jobs/(?P<job_id>\d+)/start/$', 'email_job_start'),
     (r'^jobs/create/$', 'email_job_create'),
     
 
