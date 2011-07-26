@@ -33,13 +33,7 @@ def store_raw_data_as_blob(data,name,content_type):
     logging.info('file key:%s'%blob_key)
     return blob_key
 
-def plan_import_task(fk=None):
-    logging.info('plan_import_task')
-    if fk is None:
-        return
-    logging.info('key = %s'%fk)
-    taskqueue.add(url='/tasks/register_csv_order/%s/'%fk, method='GET')
-    
+
 
 
 
@@ -50,42 +44,21 @@ class LogSenderHandler(InboundMailHandler):
 
     def receive(self, mail_message):
 
-        logging.info("INMAIL handler")
+        logging.info('INMAIL_TEST handler')
         logging.info("Received a message from: %s, to: %s" % (mail_message.sender, mail_message.to))
         logging.info("mail date: %s" % mail_message.date)
         logging.info("subject: %s" % mail_message.subject)
-
-#        data = mail_message.to_mime_message()
-#        logging.info(data)
-
-#        if mail_message.subject.startswith('test'):
-#            plaintext_bodies = mail_message.bodies('text/plain')
-#            for c,b in plaintext_bodies:
-#                fk = store_raw_data_as_blob(b.decode(),'test','text/plain')
-#                plan_import_task(fk)
-#            return
         
-        plaintext_bodies = mail_message.bodies('text/plain')
-        for c,b in plaintext_bodies:
-            logging.info('%s' % b.decode()) 
+        data = mail_message.original.as_string(unixfrom=True)
+        #data = mail_message.to_mime_message().as_string(unixfrom=True)
+        logging.info(data)
 
-        if hasattr(mail_message, "attachments"):
-            for name,content in mail_message.attachments:
-                logging.info('attachment name %s'% name)
-                logging.info('attachment content %s'% content)
-                logging.info('attachment content charset %s'% content.charset)
-                if not content.charset:
-                    content.charset='windows-1250'
-                    logging.info('attachment content NEW charset %s'% content.charset)
-                logging.info('attachment decode %s'%content.decode())
-                if name.endswith('.csv'):
-                    fk = store_raw_data_as_blob(content.decode().encode('utf-8'),name,'text/csv')
-                    plan_import_task(fk)
-                else:
-                    logging.info('no csv')
+        fk = store_raw_data_as_blob(data,'-email-','text/plain')
+        if fk is None:
+            logging.warning("can't store blob - no BlobKey received")
         else:
-            logging.info('no attachment')
-
+            taskqueue.add(url='/tasks/incoming_email/%s/'%fk, method='GET')
+            logging.info("import task scheduled")
 
 def main():
     application = webapp.WSGIApplication([LogSenderHandler.mapping()], debug=True)
