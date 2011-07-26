@@ -4,6 +4,14 @@
 
 {% block content %}
 
+
+<script type="text/javascript">
+ var RecaptchaOptions = {
+    theme : 'white',
+    custom_translations : { instructions_visual : "This is my text:" }
+ };
+ </script>
+
 {{last_result}}<br>
 <form method="post" name="form">
 {{ html_captcha|safe }}
