@@ -300,7 +300,6 @@ def captcha_test(request):
         remoteip  = os.environ['REMOTE_ADDR']
         logging.info("challenge=%s, response=%s, remoteip=%s"%(challenge,response,remoteip))
         resp = submit(challenge, response, getConfig('CAPTCHA_PRIVATE_KEY',''), remoteip)
-        logging.info(resp)
         if resp.is_valid:
             logging.info('OK')
             last_result = 'OK'
