@@ -52,4 +52,5 @@ def setupConfig():
     createConfig('MAIL_TEST_FROM','admin@domain.com') 
     createConfig('MAIL_TEST','0') 
     createConfig('ENABLE_MAIL_JOBS','0')
+    createConfig('ENABLE_MAIL_TEST','0')
     

@@ -113,7 +113,7 @@ def parse_email(request, file_key):
     email.sender = getConfig("MAIL_TEST_FROM")
     email.to = getConfig("MAIL_TEST_TO")
 
-    if getConfigBool("MAIL_TEST",False):
+    if getConfigBool("ENABLE_MAIL_TEST",False):
         logging.info('sending email....')
         email.send()
 
@@ -244,7 +244,14 @@ def email_template_test_send(request, template_id):
                 email.sender = getConfig('DEFAULT_SENDER')
                 email.to = to_a
                 email.check_initialized()
-                #email.send()
+
+                if getConfigBool("ENABLE_MAIL_TEST",False):
+                    logging.info('sending...')
+                    email.send()
+                else:
+                    logging.info('disabled')
+        
+
             except:
                 logging.info("can't init email! %s"%sys.exc_info()[1])
                 return HttpResponse("can't init email - %s"%sys.exc_info()[1])
