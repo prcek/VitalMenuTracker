@@ -7,6 +7,7 @@ import logging
 class Season(BaseModel):
     name = db.StringProperty()
     hidden = db.BooleanProperty(default=False) 
+    actual = db.BooleanProperty(default=False)
 
 class Category(BaseModel):
     name = db.StringProperty()
