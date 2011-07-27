@@ -221,9 +221,76 @@ def categories_index(request, season_id=None):
 
 
     categories = Category.all().ancestor(season)
-
     
     return render_to_response('school/categories_index.html', RequestContext(request, {'category_list': categories}))
+
+
+def category_show(request,season_id, category_id):
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+
+
+    #TODO: build category key!
+    category = Category.get_by_id(int(category_id))
+    if category is None:
+        raise Http404
+    
+
+    return render_to_response('school/category_show.html', RequestContext(request, {'season':season, 'category':category}))
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Season
+        fields = ( 'name','hidden' )
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if len(data)==0:
+            raise forms.ValidationError('missing value')
+        return data
+
+
+
+def category_edit(request,season_id, category_id):
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            logging.info('edit category before %s'% category)
+            form.save(commit=False)
+            logging.info('edit category after %s'% category)
+            season.save()
+            return redirect('../..')
+    else:
+        form = CategoryForm(instance=category)
+
+    return render_to_response('school/category_edit.html', RequestContext(request, {'form':form}))
+
+def category_create(request, season_id):
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+
+
+    category = Category(parent=season)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            logging.info('edit category before %s'% category)
+            form.save(commit=False)
+            logging.info('edit category after %s'% category)
+            category.save()
+            return redirect('..')
+    else:
+        form = CategoryForm(instance=category)
+    return render_to_response('school/category_create.html', RequestContext(request, {'form':form}))
+
+
 
 def courses_index(request):
     return render_to_response('school/courses_index.html', RequestContext(request))
