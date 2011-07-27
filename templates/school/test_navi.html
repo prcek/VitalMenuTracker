@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %} school test navi {% endblock %}
+
+{% block content %}
+
+
+{% if list %}
+    <select>
+    {% for i in list %} 
+    <optgroup label="{{i.label}}">
+        {% for si in i.list %}
+            <option value="{{si.value}}">{{si.label}}</option>
+        {% endfor %}
+    </optgroup>
+    {% endfor %}
+    </select>
+{% else %}
+    no list
+{% endif %}
+
+
+<a class='button' href=''>reload</a>
+
+{% endblock %}

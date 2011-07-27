@@ -16,6 +16,24 @@ from school.models import Season,Category,Course,Group,Student
 import logging
 
 
+def get_course_navi_list(season_key):
+    logging.info('get_course_navi_list for key:%s',season_key) 
+    courses_query = Course.all().ancestor(season_key)
+    categories_query = Category.all().ancestor(season_key)
+    cat_set = set([])
+    courses = []
+    result = []
+    for course in courses_query:
+        category_key = course.parent_key()
+        cat_set.add(category_key)
+        courses.append(course)
+    for category in categories_query:
+        if category.key() in cat_set:
+            sub_list = [{'label':c.code, 'value':c.key()} for c in courses if c.parent_key()==category.key()] 
+            result.append({'label':category.name,'value':category.key(), 'list':sub_list})
+    return result 
+
+
 def index(request):
 
     logging.info('test of long key chain')
@@ -120,6 +138,14 @@ def test_index(request):
         
     
     return render_to_response('school/test_index.html', RequestContext(request))
+
+
+def test_navi(request):
+    season = Season.all().fetch(limit=1,offset=1)[0]
+    if season is None:
+        raise Http404
+    navi_list = get_course_navi_list(season.key())
+    return render_to_response('school/test_navi.html', RequestContext(request, {'list':navi_list}))
 
 def courses_index(request):
     return render_to_response('school/courses_index.html', RequestContext(request))
