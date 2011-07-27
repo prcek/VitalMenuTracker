@@ -4,6 +4,29 @@
 
 {% block content %}
 
-    school
+{% if season_list %}
+    <table>
+    <tr><th>id</th><th>name</th><th>hidden</th><th>actual</th><th>action</th></tr>
+    {% for s in season_list %}
+    <tr>
+    <td>{{s.key|gae_key}}</td>
+    <td>{{s.name}}</td>
+    <td>{{s.hidden}}</td>
+    <td>{{s.actual}}</td>
+    <td>
+        <a class='button' href='{{s.key.id}}/'>show</a>&nbsp;        
+        <a class='button' href='{{s.key.id}}/edit/'>edit</a>&nbsp;        
+    </td>
+    </tr>
+    {% endfor %}
+    </table>
+    
+{% else %}
+    no season
+{% endif %}
+
+<a class='button' href='create/'>create</a>
+<a class='button' href=''>reload</a>
+
 
 {% endblock %}

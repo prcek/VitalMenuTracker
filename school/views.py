@@ -1,5 +1,6 @@
 # Create your views here.
 from django.http import HttpResponse, Http404
+from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template import RequestContext,Context, loader
 
@@ -17,7 +18,7 @@ import logging
 
 
 def get_actual_season():
-    s = Season.all().filter('actual=',True).get()
+    s = Season.all().filter('actual =',True).get()
     if s is None:
         s = Season.all().get()
     return s
@@ -155,7 +156,59 @@ def test_navi(request):
     return render_to_response('school/test_navi.html', RequestContext(request, {'list':navi_list}))
 
 def seasons_index(request):
-    return render_to_response('school/seasons_index.html', RequestContext(request))
+#    seasons = Season.all().filter('hidden=',False)
+    seasons = Season.all()
+    return render_to_response('school/seasons_index.html', RequestContext(request, {'season_list':seasons}))
+
+def season_show(request,season_id):
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+    return render_to_response('school/season_show.html', RequestContext(request, {'season':season}))
+
+class SeasonForm(forms.ModelForm):
+    class Meta:
+        model = Season
+        fields = ( 'name','hidden','actual' )
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if len(data)==0:
+            raise forms.ValidationError('missing value')
+        return data
+
+
+
+def season_edit(request,season_id):
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+    if request.method == 'POST':
+        form = SeasonForm(request.POST, instance=season)
+        if form.is_valid():
+            logging.info('edit season before %s'% season)
+            form.save(commit=False)
+            logging.info('edit season after %s'% season)
+            season.save()
+            return redirect('../..')
+    else:
+        form = SeasonForm(instance=season)
+
+    return render_to_response('school/season_edit.html', RequestContext(request, {'form':form}))
+
+def season_create(request):
+    season = Season()
+    if request.method == 'POST':
+        form = SeasonForm(request.POST, instance=season)
+        if form.is_valid():
+            logging.info('edit season before %s'% season)
+            form.save(commit=False)
+            logging.info('edit season after %s'% season)
+            season.save()
+            return redirect('..')
+    else:
+        form = SeasonForm(instance=season)
+    return render_to_response('school/season_create.html', RequestContext(request, {'form':form}))
 
 def courses_index(request):
     return render_to_response('school/courses_index.html', RequestContext(request))
