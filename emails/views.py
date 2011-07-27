@@ -159,6 +159,13 @@ def incoming_email(request, file_key):
         logging.info('import order')
         process_incoming_email_order(email)
         return HttpResponse("ok - import order")
+
+    if a_from == 'info@vitalmenu.cz':
+        logging.info('import order')
+        process_incoming_email_order(email)
+        return HttpResponse("ok - import order")
+
+
     r = re.match(r'^import-email-(\d+)@',a_to) 
     if r:
         logging.info('import email, id %s'%r.group(1))

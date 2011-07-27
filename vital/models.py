@@ -38,7 +38,7 @@ class OrderItem(BaseModel):
         d = row[1].split('.')
         self.date = datetime.date(int(d[2]),int(d[1]),int(d[0]))
         self.name = row[2]
-        self.cost = int(row[3])
+        self.cost = int(row[3]) / abs(int(row[0]))
         self.owner_name = row[4]
         self.owner_surname = row[5]
         if (int(row[0])<0):
