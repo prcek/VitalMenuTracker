@@ -210,6 +210,21 @@ def season_create(request):
         form = SeasonForm(instance=season)
     return render_to_response('school/season_create.html', RequestContext(request, {'form':form}))
 
+def categories_index(request, season_id=None):
+    if season_id is None:
+        season_id = get_actual_season().key().id()
+        return redirect('%d/'%season_id)
+
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+
+
+    categories = Category.all().ancestor(season)
+
+    
+    return render_to_response('school/categories_index.html', RequestContext(request, {'category_list': categories}))
+
 def courses_index(request):
     return render_to_response('school/courses_index.html', RequestContext(request))
 

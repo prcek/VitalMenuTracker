@@ -11,6 +11,7 @@ class Season(BaseModel):
 
 class Category(BaseModel):
     name = db.StringProperty()
+    hidden = db.BooleanProperty(default=False) 
     
 class Course(BaseModel):
     code = db.StringProperty()
