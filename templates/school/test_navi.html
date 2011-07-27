@@ -5,6 +5,7 @@
 {% block content %}
 
 
+<div class='box'>
 {% if list %}
     <select>
     {% for i in list %} 
@@ -18,6 +19,29 @@
 {% else %}
     no list
 {% endif %}
+</div><br>
+
+<div class='box'>
+{% if list %}
+    <ul class='navi'>
+     {% for i in list %} 
+    <li class='navi'>{{i.label}}
+        <ul class='navi'>
+        {% for si in i.list %}
+            {% if si.link %}
+            <li class='navi'><a class='navi' href='{{si.link}}'>{{si.label}}</a></li>
+            {% else %}
+            <li class='navi'><a class='navi' href='{{si.value}}/'>{{si.label}}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul> 
+    </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    no list
+{% endif %}
+</div><br>
 
 
 <a class='button' href=''>reload</a>
