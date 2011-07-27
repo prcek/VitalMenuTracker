@@ -16,6 +16,13 @@ from school.models import Season,Category,Course,Group,Student
 import logging
 
 
+def get_actual_season():
+    s = Season.all().filter('actual=',True).get()
+    if s is None:
+        s = Season.all().get()
+    return s
+    
+
 def get_course_navi_list(season_key):
     logging.info('get_course_navi_list for key:%s',season_key) 
     courses_query = Course.all().ancestor(season_key)
@@ -141,11 +148,14 @@ def test_index(request):
 
 
 def test_navi(request):
-    season = Season.all().fetch(limit=1,offset=1)[0]
+    season = get_actual_season()
     if season is None:
         raise Http404
     navi_list = get_course_navi_list(season.key())
     return render_to_response('school/test_navi.html', RequestContext(request, {'list':navi_list}))
+
+def seasons_index(request):
+    return render_to_response('school/seasons_index.html', RequestContext(request))
 
 def courses_index(request):
     return render_to_response('school/courses_index.html', RequestContext(request))
