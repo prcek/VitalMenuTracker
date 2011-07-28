@@ -4,6 +4,41 @@
 
 {% block content %}
 
-    school
+{% if students %}
+    <table>
+    <tr><th>g_id</th><th>group</th><th>g_action</th><th>id</th><th>name</th><th>actions</th></tr>
+    {% for g in students %}
+        {% if g.students %}
+            {% for s in g.students %}
+            <tr>
+            {% with forloop.first as first_row %}  
+                {% with g.students|length as rowspan %}            
+                    {% include "school/students_group_row.html" %}
+                {% endwith %}
+            {% endwith %}
+            {% with s as student %}
+                {% include "school/students_student_row.html" %}
+            {% endwith %}
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+            {% with 'True' as first_row %}
+                {% with '1' as rowspan %}
+                    {% include "school/students_group_row.html" %}
+                {% endwith %}
+            {% endwith %}
+            {% with None as student %}
+                {% include "school/students_student_row.html" %}
+            {% endwith %}
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </table>
+{% else %}
+    no students
+{% endif %}
+
+
 
 {% endblock %}

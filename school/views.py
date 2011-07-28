@@ -78,6 +78,26 @@ def get_course_navi_list(season_key, actual=None):
             result.append({'label':category.name,'value':category.key(), 'list':sub_list})
     return result 
 
+def get_students(course):
+    students_query = Student.all().ancestor(course)
+    groups_query = Group.all().ancestor(course)
+    gr_set = set([])
+    students = []
+    result = []
+   
+    for student in students_query:
+        group_key = student.parent_key()  
+        gr_set.add(group_key)
+        students.append(student)
+
+    for group in groups_query:
+        if group.key() in gr_set:
+            sub_list = [ s for s in students if s.parent_key()==group.key()] 
+            result.append({'group':group,'students':sub_list})
+        else:
+            result.append({'group':group,'students':[]})
+
+    return result
 
 def index(request):
 
@@ -497,9 +517,10 @@ def students_index(request, season_id=None, category_id=None, course_id=None):
         raise Http404
  
 
+    students = get_students(course)
+    logging.info(students)
 
-
-    return render_to_response('school/students_index.html', RequestContext(request))
+    return render_to_response('school/students_index.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'students':students}))
 
 def enrolment_index(request):
     return render_to_response('school/enrolment_index.html', RequestContext(request))
