@@ -1,0 +1,22 @@
+
+{% if course_navi_list %}
+    <form method="post" name="form">
+        course:
+        <select name="switch_course">
+        {% for i in course_navi_list %} 
+        <optgroup label="{{i.label}}">
+            {% for si in i.list %}
+                <option {% if si.selected %} selected {% endif %}  value="{{si.value}}">{{si.label}}</option>
+            {% endfor %}
+        </optgroup>
+        {% endfor %}
+        </select>
+        <input class="button" type="submit" value="select">
+    </form>
+{% else %}
+    <span class='box'>no data for coursen switch</span>
+{% endif %}
+
+
+
+

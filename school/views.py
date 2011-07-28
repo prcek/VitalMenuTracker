@@ -74,7 +74,7 @@ def get_course_navi_list(season_key, actual=None):
         courses.append(course)
     for category in categories_query:
         if category.key() in cat_set:
-            sub_list = [{'label':c.code, 'value':c.key()} for c in courses if c.parent_key()==category.key()] 
+            sub_list = [{'label':c.code, 'value':'%s/%s'%(category.key().id(),c.key().id()), 'selected':(c.key()==actual.key())} for c in courses if c.parent_key()==category.key()] 
             result.append({'label':category.name,'value':category.key(), 'list':sub_list})
     return result 
 
@@ -492,6 +492,17 @@ def course_create(request, season_id, category_id):
 
 
 def students_index(request, season_id=None, category_id=None, course_id=None):
+
+    if request.method == 'POST':
+        if 'switch_season' in request.POST:
+            ss = request.POST['switch_season']
+            return HttpResponseRedirect('../../../%s/'%ss)
+        if 'switch_course' in request.POST:
+            sc = request.POST['switch_course']
+            return HttpResponseRedirect('../../%s/'%sc)
+
+
+
     if season_id is None:  
         season = get_actual_season()
         return redirect('%d/'%season.key().id())
@@ -516,11 +527,13 @@ def students_index(request, season_id=None, category_id=None, course_id=None):
     if course is None:
         raise Http404
  
+    snl = get_season_navi_list(season)
+    cnl = get_course_navi_list(season,course)
 
     students = get_students(course)
     logging.info(students)
 
-    return render_to_response('school/students_index.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'students':students}))
+    return render_to_response('school/students_index.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'students':students, 'season_navi_list':snl, 'course_navi_list':cnl}))
 
 def enrolment_index(request):
     return render_to_response('school/enrolment_index.html', RequestContext(request))

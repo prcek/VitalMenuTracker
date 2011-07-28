@@ -4,6 +4,11 @@
 
 {% block content %}
 
+
+{% include "school/season_switch.html" %} <br>
+{% include "school/course_switch.html" %} <br>
+
+
 {% if students %}
     <table>
     <tr><th>g_id</th><th>group</th><th>g_action</th><th>id</th><th>name</th><th>actions</th></tr>
