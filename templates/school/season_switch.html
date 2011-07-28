@@ -1,0 +1,15 @@
+
+{% if season_navi_list %}
+    <form method="post" name="form">
+        season:
+        <select name="switch_season">
+        {% for s in season_navi_list %} 
+            <option {% if s.selected %} selected {% endif %} value="{{s.value}}">{{s.label}}</option>
+        {% endfor %}
+        </select>
+        <input class="button" type="submit" value="select">
+    </form>
+{% else %}
+    <span class='box'>no data for season switch<span>
+{% endif %}
+
