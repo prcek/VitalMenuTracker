@@ -12,6 +12,10 @@ class Season(BaseModel):
 class Category(BaseModel):
     name = db.StringProperty()
     hidden = db.BooleanProperty(default=False) 
+
+    @staticmethod
+    def get_by_season_and_id(season, id):
+        return Category.get(db.Key.from_path('Category',id, parent = season.key()))
     
 class Course(BaseModel):
     code = db.StringProperty()

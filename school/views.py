@@ -1,5 +1,5 @@
 # Create your views here.
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template import RequestContext,Context, loader
@@ -22,9 +22,21 @@ def get_actual_season():
     if s is None:
         s = Season.all().get()
     return s
+
+def get_season_navi_list(actual=None):
+    result = []    
+    slist = Season.all().filter('hidden !=',True)
+    for s in slist:
+        if actual and s.key() == actual.key():
+            selected = True
+        else:
+            selected = False
+        result.append({'label':s.name,'value':s.key().id(), 'selected':selected})
+
+    return result
     
 
-def get_course_navi_list(season_key):
+def get_course_navi_list(season_key, actual=None):
     logging.info('get_course_navi_list for key:%s',season_key) 
     courses_query = Course.all().ancestor(season_key)
     categories_query = Category.all().ancestor(season_key)
@@ -211,6 +223,12 @@ def season_create(request):
     return render_to_response('school/season_create.html', RequestContext(request, {'form':form}))
 
 def categories_index(request, season_id=None):
+
+    if request.method == 'POST':
+        ss = request.POST['switch_season']
+        return HttpResponseRedirect('../%s/'%ss)
+
+
     if season_id is None:
         season_id = get_actual_season().key().id()
         return redirect('%d/'%season_id)
@@ -219,23 +237,26 @@ def categories_index(request, season_id=None):
     if season is None:
         raise Http404
 
+    snl = get_season_navi_list(season)
 
     categories = Category.all().ancestor(season)
     
-    return render_to_response('school/categories_index.html', RequestContext(request, {'category_list': categories}))
+    return render_to_response('school/categories_index.html', RequestContext(request, {'category_list': categories, 'season':season, 'season_navi_list':snl}))
 
-
-def category_show(request,season_id, category_id):
+def get_season_and_category(season_id, category_id):
     season = Season.get_by_id(int(season_id))
     if season is None:
         raise Http404
 
-
-    #TODO: build category key!
-    category = Category.get_by_id(int(category_id))
+    category = Category.get_by_season_and_id(season,int(category_id))
     if category is None:
         raise Http404
-    
+   
+    return (season,category) 
+
+def category_show(request,season_id, category_id):
+
+    (season,category) = get_season_and_category(season_id, category_id)
 
     return render_to_response('school/category_show.html', RequestContext(request, {'season':season, 'category':category}))
 
@@ -253,10 +274,8 @@ class CategoryForm(forms.ModelForm):
 
 
 def category_edit(request,season_id, category_id):
-    season = Season.get_by_id(int(season_id))
-    if season is None:
-        raise Http404
 
+    (season,category) = get_season_and_category(season_id, category_id)
 
     if request.method == 'POST':
         form = CategoryForm(request.POST, instance=category)
@@ -264,7 +283,7 @@ def category_edit(request,season_id, category_id):
             logging.info('edit category before %s'% category)
             form.save(commit=False)
             logging.info('edit category after %s'% category)
-            season.save()
+            category.save()
             return redirect('../..')
     else:
         form = CategoryForm(instance=category)
