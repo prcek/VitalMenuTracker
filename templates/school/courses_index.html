@@ -8,6 +8,30 @@
 {% include "school/category_switch.html" %} <br>
 
 
-    school
+
+{% if courses_list %}
+    <table>
+    <tr><th>id</th><th>code</th><th>hidden</th><th>action</th></tr>
+    {% for c in courses_list %}
+    <tr>
+    <td>{{c.key|gae_key}}</td>
+    <td>{{c.code}}</td>
+    <td>{{c.hidden}}</td>
+    <td>
+        <a class='button' href='{{c.key.id}}/'>show</a>&nbsp;        
+        <a class='button' href='{{c.key.id}}/edit/'>edit</a>&nbsp;        
+    </td>
+    </tr>
+    {% endfor %}
+    </table>
+    
+{% else %}
+    no courses
+{% endif %}
+
+<a class='button' href='create/'>create</a>
+<a class='button' href=''>reload</a>
+
+
 
 {% endblock %}
