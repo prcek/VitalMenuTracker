@@ -26,6 +26,20 @@
     {% endwith %}
 {% endif %}
 
+{% if dump_groups %}
+    groups
+    {% with dump_groups as groups %}
+        {% include "school/table_groups.html" %}
+    {% endwith %}
+{% endif %}
+
+{% if dump_students %}
+    students
+    {% with dump_students as students %}
+        {% include "school/table_students.html" %}
+    {% endwith %}
+{% endif %}
+
 
 
 <br>

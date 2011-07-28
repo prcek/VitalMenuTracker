@@ -20,6 +20,10 @@ urlpatterns = patterns('school.views',
     (r'^courses/(?P<season_id>\d+)/(?P<category_id>\d+)/(?P<course_id>\d+)/$', 'course_show'),
     (r'^courses/(?P<season_id>\d+)/(?P<category_id>\d+)/(?P<course_id>\d+)/edit/$', 'course_edit'),
     (r'^students/$', 'students_index'),
+    (r'^students/(?P<season_id>\d+)/$', 'students_index'),
+    (r'^students/(?P<season_id>\d+)/(?P<category_id>\d+)/$', 'students_index'),
+    (r'^students/(?P<season_id>\d+)/(?P<category_id>\d+)/(?P<course_id>\d+)/$', 'students_index'),
+
     (r'^enrolment/$', 'enrolment_index'),
 )
 

@@ -26,6 +26,9 @@ def get_actual_season():
 def get_actual_category_for_season(season):
     return Category.all().ancestor(season).get()
 
+def get_actual_course_for_category(category):
+    return Course.all().ancestor(category).get()
+
 
 def get_actual_season_and_category():
     season = get_actual_season()
@@ -162,20 +165,53 @@ def test_index(request):
         course_4 = Course(parent = cat_3)
         course_4.code = 'C4'
         course_4.save()
+
+
+        group_1 = Group(parent = course_1)
+        group_1.name = 'g1'
+        group_1.save()
+
+        group_2 = Group(parent = course_1)
+        group_2.name = 'g2'
+        group_2.save()
+
+        group_3 = Group(parent = course_1)
+        group_3.name = 'g3'
+        group_3.save()
+
+
+
+        student_1_1 = Student(parent = group_1)
+        student_1_1.name = 'st1'
+        student_1_1.save()
+        
+        student_1_2 = Student(parent = group_1)
+        student_1_2.name = 'st2'
+        student_1_2.save()
+ 
+        student_2_1 = Student(parent = group_2)
+        student_2_1.name = 'st3'
+        student_2_1.save()
+ 
  
     elif action == 'reset':
         db.delete(Season.all(keys_only=True))
         db.delete(Category.all(keys_only=True))
         db.delete(Course.all(keys_only=True))
-        pass
+        db.delete(Group.all(keys_only=True))
+        db.delete(Student.all(keys_only=True))
     elif action == 'dump':
         dump_seasons = Season.all()
         dump_categories = Category.all()
         dump_courses = Course.all()
+        dump_groups = Group.all()
+        dump_students = Student.all()
         return render_to_response('school/test_index.html', RequestContext(request, {
             'dump_seasons':dump_seasons,
             'dump_categories':dump_categories,
             'dump_courses':dump_courses,
+            'dump_groups':dump_groups,
+            'dump_students':dump_students,
         }))
         
     
@@ -435,7 +471,34 @@ def course_create(request, season_id, category_id):
 
 
 
-def students_index(request):
+def students_index(request, season_id=None, category_id=None, course_id=None):
+    if season_id is None:  
+        season = get_actual_season()
+        return redirect('%d/'%season.key().id())
+
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+  
+    if category_id is None:
+        category = get_actual_category_for_season(season) 
+        return redirect('%d/'%category.key().id())
+
+    category = Category.get_by_season_and_id(season,int(category_id))
+    if category is None:
+        raise Http404
+ 
+    if course_id is None:
+        course = get_actual_course_for_category(category) 
+        return redirect('%d/'%course.key().id())
+
+    course = Course.get_by_category_and_id(category,int(course_id))
+    if course is None:
+        raise Http404
+ 
+
+
+
     return render_to_response('school/students_index.html', RequestContext(request))
 
 def enrolment_index(request):

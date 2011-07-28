@@ -1,0 +1,6 @@
+<table>
+<tr><th>id</th><th>name</th></tr>
+{% for student in students %}
+<tr><td>{{student.key|gae_key}}</td><td>{{student.name}}</td></tr>
+{% endfor %}
+</table>

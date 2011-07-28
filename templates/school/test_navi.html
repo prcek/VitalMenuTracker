@@ -43,6 +43,28 @@
 {% endif %}
 </div><br>
 
+<div class='box'>
+{% if list %}
+    <ul class='navi'>
+     {% for i in list %} 
+    <li class='navi'>{{i.label}} - 
+        {% for si in i.list %}
+            {% if si.link %}
+            <a class='navi' href='{{si.link}}'>{{si.label}}</a>
+            {% else %}
+            <a class='navi' href='{{si.value}}/'>{{si.label}}</a>
+            {% endif %}
+            &nbsp;
+        {% endfor %}
+    </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    no list
+{% endif %}
+</div><br>
+
+
 
 <a class='button' href=''>reload</a>
 

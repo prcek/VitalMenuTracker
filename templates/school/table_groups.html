@@ -1,0 +1,6 @@
+<table>
+<tr><th>id</th><th>name</th><th>invisible</th></tr>
+{% for group in groups %}
+<tr><td>{{group.key|gae_key}}</td><td>{{group.name}}</td><td>{{group.invisible}}</tr>
+{% endfor %}
+</table>
