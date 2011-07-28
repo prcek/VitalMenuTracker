@@ -23,6 +23,16 @@ def get_actual_season():
         s = Season.all().get()
     return s
 
+def get_actual_category_for_season(season):
+    return Category.all().ancestor(season).get()
+
+
+def get_actual_season_and_category():
+    season = get_actual_season()
+    cat = get_actual_category_for_season(season)
+    return (season,cat)
+    
+
 def get_season_navi_list(actual=None):
     result = []    
     slist = Season.all().filter('hidden !=',True)
@@ -32,6 +42,18 @@ def get_season_navi_list(actual=None):
         else:
             selected = False
         result.append({'label':s.name,'value':s.key().id(), 'selected':selected})
+
+    return result
+
+def get_category_navi_list(season, actual=None):
+    result = []    
+    clist = Category.all().ancestor(season).filter('hidden !=',True)
+    for c in clist:
+        if actual and c.key() == actual.key():
+            selected = True
+        else:
+            selected = False
+        result.append({'label':c.name,'value':c.key().id(), 'selected':selected})
 
     return result
     
@@ -311,8 +333,41 @@ def category_create(request, season_id):
 
 
 
-def courses_index(request):
-    return render_to_response('school/courses_index.html', RequestContext(request))
+def courses_index(request, season_id=None, category_id=None):
+
+
+    if request.method == 'POST':
+        if 'switch_season' in request.POST:
+            ss = request.POST['switch_season']
+            return HttpResponseRedirect('../../%s/'%ss)
+        if 'switch_category' in request.POST:
+            sc = request.POST['switch_category']
+            return HttpResponseRedirect('../%s/'%sc)
+
+
+
+    if season_id is None:  
+        season = get_actual_season()
+        return redirect('%d/'%season.key().id())
+
+    season = Season.get_by_id(int(season_id))
+    if season is None:
+        raise Http404
+  
+    if category_id is None:
+        category = get_actual_category_for_season(season) 
+        return redirect('%d/'%category.key().id())
+
+    category = Category.get_by_season_and_id(season,int(category_id))
+    if category is None:
+        raise Http404
+ 
+    snl = get_season_navi_list(season)
+    cnl = get_category_navi_list(season,category)
+
+    courses = Course.all().ancestor(category)
+    
+    return render_to_response('school/courses_index.html', RequestContext(request, {'courses_list': courses, 'category':category, 'season':season, 'category_navi_list':cnl, 'season_navi_list':snl}))
 
 def students_index(request):
     return render_to_response('school/students_index.html', RequestContext(request))

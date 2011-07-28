@@ -14,6 +14,8 @@ urlpatterns = patterns('school.views',
     (r'^categories/(?P<season_id>\d+)/(?P<category_id>\d+)/$', 'category_show'),
     (r'^categories/(?P<season_id>\d+)/(?P<category_id>\d+)/edit/$', 'category_edit'),
     (r'^courses/$', 'courses_index'),
+    (r'^courses/(?P<season_id>\d+)/$', 'courses_index'),
+    (r'^courses/(?P<season_id>\d+)/(?P<category_id>\d+)/$', 'courses_index'),
     (r'^students/$', 'students_index'),
     (r'^enrolment/$', 'enrolment_index'),
 )
