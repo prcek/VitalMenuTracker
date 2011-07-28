@@ -284,7 +284,7 @@ def category_show(request,season_id, category_id):
 
 class CategoryForm(forms.ModelForm):
     class Meta:
-        model = Season
+        model = Category
         fields = ( 'name','hidden' )
 
     def clean_name(self):
@@ -335,7 +335,6 @@ def category_create(request, season_id):
 
 def courses_index(request, season_id=None, category_id=None):
 
-
     if request.method == 'POST':
         if 'switch_season' in request.POST:
             ss = request.POST['switch_season']
@@ -368,6 +367,73 @@ def courses_index(request, season_id=None, category_id=None):
     courses = Course.all().ancestor(category)
     
     return render_to_response('school/courses_index.html', RequestContext(request, {'courses_list': courses, 'category':category, 'season':season, 'category_navi_list':cnl, 'season_navi_list':snl}))
+
+
+def get_season_and_category_and_course(season_id, category_id, course_id):
+    (season,category) = get_season_and_category(season_id, category_id)
+
+    course = Course.get_by_category_and_id(category,int(course_id))
+    if course is None:
+        raise Http404
+   
+    return (season,category, course) 
+
+
+def course_show(request,season_id, category_id, course_id):
+
+    (season,category,course) = get_season_and_category_and_course(season_id, category_id, course_id)
+
+    return render_to_response('school/course_show.html', RequestContext(request, {'season':season, 'category':category, 'course':course}))
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ( 'code','hidden' )
+
+    def clean_name(self):
+        data = self.cleaned_data['code']
+        if len(data)==0:
+            raise forms.ValidationError('missing value')
+        return data
+
+
+
+def course_edit(request,season_id, category_id, course_id):
+
+    (season,category,course) = get_season_and_category_and_course(season_id, category_id, course_id)
+
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=course)
+        if form.is_valid():
+            logging.info('edit course before %s'% course)
+            form.save(commit=False)
+            logging.info('edit course after %s'% course)
+            course.save()
+            return redirect('../..')
+    else:
+        form = CourseForm(instance=course)
+
+    return render_to_response('school/course_edit.html', RequestContext(request, {'form':form}))
+
+def course_create(request, season_id, category_id):
+    (season,category) = get_season_and_category(season_id, category_id)
+
+    course = Course(parent=category)
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=course)
+        if form.is_valid():
+            logging.info('edit course before %s'% course)
+            form.save(commit=False)
+            logging.info('edit course after %s'% course)
+            course.save()
+            return redirect('..')
+    else:
+        form = CourseForm(instance=course)
+    return render_to_response('school/course_create.html', RequestContext(request, {'form':form}))
+
+
+
+
 
 def students_index(request):
     return render_to_response('school/students_index.html', RequestContext(request))

@@ -20,6 +20,10 @@ class Category(BaseModel):
 class Course(BaseModel):
     code = db.StringProperty()
     name = db.StringProperty()
+    hidden = db.BooleanProperty(default=False) 
+    @staticmethod
+    def get_by_category_and_id(category,id):
+        return Course.get(db.Key.from_path('Course',id, parent = category.key()))
     
 class Group(BaseModel):
     name = db.StringProperty()
