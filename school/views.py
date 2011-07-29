@@ -544,7 +544,7 @@ def students_index(request, season_id=None, category_id=None, course_id=None):
     cnl = get_course_navi_list(season,course)
 
     students = get_students(course)
-    logging.info(students)
+#    logging.info(students)
 
     return render_to_response('school/students_index.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'students':students, 'season_navi_list':snl, 'course_navi_list':cnl}))
 

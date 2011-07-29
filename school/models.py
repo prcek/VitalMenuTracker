@@ -30,6 +30,7 @@ class Course(BaseModel):
     
 class Group(BaseModel):
     name = db.StringProperty()
+    mode = db.StringProperty(choices=['Flat','Group','Pair','Import'], default='Flat')
     order_key = db.IntegerProperty(default=None)
     invisible = db.BooleanProperty(default=True)
     @staticmethod
@@ -39,6 +40,22 @@ class Group(BaseModel):
 
 class Student(BaseModel):
     name = db.StringProperty()  
+    surname = db.StringProperty()
+    sex = db.StringProperty(choices=['s','d','p'])
+    payment = db.IntegerProperty()
+    to_pay = db.IntegerProperty()
+    payment_info = db.StringProperty()
+    a_street = db.StringProperty()
+    a_no = db.StringProperty()
+    a_post_code = db.StringProperty()
+    phone = db.StringProperty()
+    email = db.StringProperty()
+    spam = db.BooleanProperty()
+    student = db.BooleanProperty()
+    student_check = db.BooleanProperty()
+    comment = db.StringProperty()
+    year = db.IntegerProperty() 
+    
     @staticmethod
     def get_by_group_and_id(group,id):
         return Student.get(db.Key.from_path('Student',id, parent = group.key()))

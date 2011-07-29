@@ -1,5 +1,6 @@
 from utils.data import CSVBlobReader
 from school.models import Season,Category,Course,Group,Student
+from google.appengine.ext import db
 import logging
 
 def get_or_create_season(season_name):
@@ -129,8 +130,38 @@ def import_test(file_key):
     if course and len(course_students):
         to_import.append((course,course_students))
 
-
     for course,students in to_import:
         logging.info('code=%s, students=%d'%(course.code,len(students)))
+        group = Group.all().ancestor(course).filter('mode','Import').get()   
+        if group:
+            db.delete(Student.all(keys_only=True).ancestor(group))
+        else:
+            group = Group(parent = course) 
+            group.name = 'import group'
+            group.mode = 'Import'
+            group.save()
+        for d in students:
+            s = Student(parent = group)        
+            s.name = d['name']
+            s.surname = d['surname']
+            s.sex = d['sex']
+            s.payment = d['payment']
+            s.to_pay = d['to_pay']
+            s.payment_info = d['payment_info']
+            s.a_street = d['a_street']
+            s.a_no = d['a_no']
+            s.a_post_code = d['a_post_code']
+            s.phone = d['phone']
+            s.email = d['email']
+            s.spam = d['spam']
+            s.student = d['student']
+            s.student_check = d['student_check']
+            s.comment = d['comment']
+            s.save()
+
+
+        
+        
+         
     
 

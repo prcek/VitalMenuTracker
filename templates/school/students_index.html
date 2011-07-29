@@ -11,7 +11,7 @@
 
 {% if students %}
     <table>
-    <tr><th>g_id</th><th>group</th><th>g_action</th><th>id</th><th>name</th><th>actions</th></tr>
+    <tr><th>g_id</th><th>group</th><th>group mode</th><th>g_action</th><th>id</th><th>name</th><th>surname</th><th>actions</th></tr>
     {% for g in students %}
         {% if g.students %}
             {% for s in g.students %}
