@@ -13,6 +13,7 @@ from utils.config import getConfig
 from google.appengine.api import taskqueue
 from google.appengine.ext import db
 from school.models import Season,Category,Course,Group,Student
+
 import school.data
 import logging
 
@@ -675,10 +676,13 @@ def student_edit(request, season_id, category_id, course_id, group_id, student_i
 
     return render_to_response('school/student_edit.html', RequestContext(request, {'form':form}))
 
+def reimport_csv_backup(request,file_key):
+    taskqueue.add(url='/tasks/import_csv_backup/%s/'%file_key, method='GET')
+    return HttpResponse('scheduled - ok')
 
-def import_csv_backup(request,file_key):
+def task_import_csv_backup(request,file_key):
     result = school.data.import_test(file_key)
-    return HttpResponse(result)
+    return HttpResponse('Ok')
 
 def enrolment_index(request):
     return render_to_response('school/enrolment_index.html', RequestContext(request))

@@ -32,6 +32,7 @@ urlpatterns = patterns('',
     (r'^tasks/prepare_email_job/(?P<job_id>\d+)/$', 'emails.views.email_job_prepare'),
     (r'^tasks/start_email_job/(?P<job_id>\d+)/$', 'emails.views.email_job_start_task'),
     (r'^tasks/fire_email_subjob/(?P<subjob_key>[^/]+)/$', 'emails.views.fire_email_subjob'),
+    (r'^tasks/import_csv_backup/(?P<file_key>[^/]+)/?$', 'school.views.task_import_csv_backup'),
     (r'^utils/setup/$', 'utils.setup.setup'),
     (r'^$', 'accounts.views.goHome'),
 
