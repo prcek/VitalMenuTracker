@@ -559,12 +559,12 @@ def get_season_and_category_and_course_and_group(season_id, category_id, course_
     return (season,category, course, group) 
 
 
-def group_show(request, season_id, category_id, course_id, group_id):
+def group_index(request, season_id, category_id, course_id, group_id):
 
     (season,category,course,group) = get_season_and_category_and_course_and_group(season_id, category_id, course_id, group_id)
     students = get_students(group)
 
-    return render_to_response('school/group_show.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'group': group, 'students':students}))
+    return render_to_response('school/group_index.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'group': group, 'students':students}))
 
 class GroupForm(forms.ModelForm):
     class Meta:
@@ -611,6 +611,70 @@ def group_edit(request, season_id, category_id, course_id, group_id):
         form = GroupForm(instance=group)
 
     return render_to_response('school/group_edit.html', RequestContext(request, {'form':form}))
+
+def get_season_and_category_and_course_and_group_and_student(season_id, category_id, course_id, group_id, student_id):
+    (season,category,course,group) = get_season_and_category_and_course_and_group(season_id, category_id, course_id, group_id)
+
+    student = Student.get_by_group_and_id(group,int(student_id))
+    if student is None:
+        raise Http404
+   
+    return (season,category, course, group, student) 
+
+
+
+def student_index(request, season_id, category_id, course_id, group_id, student_id):
+
+    (season,category,course,group,student) = get_season_and_category_and_course_and_group_and_student(season_id, category_id, course_id, group_id, student_id)
+
+    return render_to_response('school/group_index.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'group': group, 'student':student}))
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ( 'name' )
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if len(data)==0:
+            raise forms.ValidationError('missing value')
+        return data
+
+
+
+def student_create(request, season_id, category_id, course_id, group_id):
+    (season,category,course, group) = get_season_and_category_and_course_and_group(season_id, category_id, course_id, group_id)
+
+    student = Student(parent=group)
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            logging.info('edit student before %s'% student)
+            form.save(commit=False)
+            logging.info('edit student after %s'% student)
+            student.save()
+            return redirect('..')
+    else:
+        form = StudentForm(instance=student)
+    return render_to_response('school/student_create.html', RequestContext(request, {'form':form}))
+
+def student_edit(request, season_id, category_id, course_id, group_id, student_id):
+
+    (season,category,course,group,student) = get_season_and_category_and_course_and_group_and_student(season_id, category_id, course_id, group_id, student_id)
+
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            logging.info('edit student before %s'% student)
+            form.save(commit=False)
+            logging.info('edit student after %s'% student)
+            student.save()
+            return redirect('../..')
+    else:
+        form = StudentForm(instance=student)
+
+    return render_to_response('school/student_edit.html', RequestContext(request, {'form':form}))
+
 
 
 def enrolment_index(request):

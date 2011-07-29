@@ -36,5 +36,8 @@ class Group(BaseModel):
 
 class Student(BaseModel):
     name = db.StringProperty()  
+    @staticmethod
+    def get_by_group_and_id(group,id):
+        return Student.get(db.Key.from_path('Student',id, parent = group.key()))
     
     
