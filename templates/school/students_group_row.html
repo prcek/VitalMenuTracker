@@ -1,4 +1,11 @@
 
 {% if first_row %}
-<td rowspan={{rowspan}} >{{g.group.key|gae_key}}</td><td rowspan={{rowspan}}>{{g.group.name}}</td><td rowspan={{rowspan}}>ga</td>
+<td rowspan={{rowspan}} >{{g.group.key|gae_key}}</td><td rowspan={{rowspan}}>{{g.group.name}}</td>
+<td rowspan={{rowspan}}>
+
+<a class='button' href='{{g.group.key.id}}/'>show</a>&nbsp;
+<a class='button' href='{{g.group.key.id}}/edit/'>edit</a>&nbsp;
+<a class='button' href='{{g.group.key.id}}/create/'>create</a>&nbsp;
+
+</td>
 {% endif %}

@@ -1,5 +1,9 @@
-{% if student %}
-<td>{{student.key|gae_key}}</td><td>{{student.name}}</td><td>ac</td>
+{% if student and group %}
+<td>{{student.key|gae_key}}</td><td>{{student.name}}</td>
+<td>
+<a class='button' href='{{group.key.id}}/{{student.key.id}}/'>show</a>&nbsp;
+<a class='button' href='{{group.key.id}}/{{student.key.id}}/edit/'>edit</a>&nbsp;
+</td>
 {% else %}
 <td colspan=3>&nbsp;</td>
 {% endif %}

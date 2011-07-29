@@ -78,25 +78,38 @@ def get_course_navi_list(season_key, actual=None):
             result.append({'label':category.name,'value':category.key(), 'list':sub_list})
     return result 
 
-def get_students(course):
-    students_query = Student.all().ancestor(course)
-    groups_query = Group.all().ancestor(course)
-    gr_set = set([])
-    students = []
+def get_students(parent):
+
     result = []
+    if isinstance(parent,Course):
+        course = parent
+        students_query = Student.all().ancestor(course)
+        groups_query = Group.all().ancestor(course)
+        gr_set = set([])
+        students = []
    
-    for student in students_query:
-        group_key = student.parent_key()  
-        gr_set.add(group_key)
-        students.append(student)
+        for student in students_query:
+            group_key = student.parent_key()  
+            gr_set.add(group_key)
+            students.append(student)
 
-    for group in groups_query:
-        if group.key() in gr_set:
-            sub_list = [ s for s in students if s.parent_key()==group.key()] 
-            result.append({'group':group,'students':sub_list})
-        else:
-            result.append({'group':group,'students':[]})
+        for group in groups_query:
+            if group.key() in gr_set:
+                sub_list = [ s for s in students if s.parent_key()==group.key()] 
+                result.append({'group':group,'students':sub_list})
+            else:
+                result.append({'group':group,'students':[]})
 
+    elif isinstance(parent,Group):
+        group = parent 
+        students_query = Student.all().ancestor(group)
+        students = []
+        for student in students_query:
+            students.append(student)
+
+        result.append({'group':group,'students':students})
+
+    
     return result
 
 def index(request):
@@ -446,7 +459,7 @@ class CourseForm(forms.ModelForm):
         model = Course
         fields = ( 'code','hidden' )
 
-    def clean_name(self):
+    def clean_code(self):
         data = self.cleaned_data['code']
         if len(data)==0:
             raise forms.ValidationError('missing value')
@@ -534,6 +547,71 @@ def students_index(request, season_id=None, category_id=None, course_id=None):
     logging.info(students)
 
     return render_to_response('school/students_index.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'students':students, 'season_navi_list':snl, 'course_navi_list':cnl}))
+
+
+def get_season_and_category_and_course_and_group(season_id, category_id, course_id, group_id):
+    (season,category,course) = get_season_and_category_and_course(season_id, category_id, course_id)
+
+    group = Group.get_by_course_and_id(course,int(group_id))
+    if group is None:
+        raise Http404
+   
+    return (season,category, course, group) 
+
+
+def group_show(request, season_id, category_id, course_id, group_id):
+
+    (season,category,course,group) = get_season_and_category_and_course_and_group(season_id, category_id, course_id, group_id)
+    students = get_students(group)
+
+    return render_to_response('school/group_show.html', RequestContext(request, {'season':season, 'category':category, 'course':course, 'group': group, 'students':students}))
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group 
+        fields = ( 'name','invisible' )
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if len(data)==0:
+            raise forms.ValidationError('missing value')
+        return data
+
+
+
+def group_create(request, season_id, category_id, course_id):
+    (season,category,course) = get_season_and_category_and_course(season_id, category_id, course_id)
+
+    group = Group(parent=course)
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance=group)
+        if form.is_valid():
+            logging.info('edit group before %s'% group)
+            form.save(commit=False)
+            logging.info('edit group after %s'% group)
+            group.save()
+            return redirect('..')
+    else:
+        form = GroupForm(instance=group)
+    return render_to_response('school/group_create.html', RequestContext(request, {'form':form}))
+
+def group_edit(request, season_id, category_id, course_id, group_id):
+
+    (season,category,course,group) = get_season_and_category_and_course_and_group(season_id, category_id, course_id, group_id)
+
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance=group)
+        if form.is_valid():
+            logging.info('edit group before %s'% group)
+            form.save(commit=False)
+            logging.info('edit group after %s'% group)
+            group.save()
+            return redirect('../..')
+    else:
+        form = GroupForm(instance=group)
+
+    return render_to_response('school/group_edit.html', RequestContext(request, {'form':form}))
+
 
 def enrolment_index(request):
     return render_to_response('school/enrolment_index.html', RequestContext(request))

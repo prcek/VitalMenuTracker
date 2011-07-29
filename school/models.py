@@ -29,6 +29,10 @@ class Group(BaseModel):
     name = db.StringProperty()
     order_key = db.IntegerProperty(default=None)
     invisible = db.BooleanProperty(default=True)
+    @staticmethod
+    def get_by_course_and_id(course,id):
+        return Group.get(db.Key.from_path('Group',id, parent = course.key()))
+ 
 
 class Student(BaseModel):
     name = db.StringProperty()  
