@@ -19,7 +19,10 @@ class Category(BaseModel):
     
 class Course(BaseModel):
     code = db.StringProperty()
-    name = db.StringProperty()
+    name = db.StringProperty(default='')
+    print_line_1 = db.StringProperty(default='')
+    print_line_2 = db.StringProperty(default='')
+    group_mode = db.StringProperty(choices=['Flat','Group','Pair'], default='Flat')
     hidden = db.BooleanProperty(default=False) 
     @staticmethod
     def get_by_category_and_id(category,id):

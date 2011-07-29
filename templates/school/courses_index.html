@@ -11,11 +11,15 @@
 
 {% if courses_list %}
     <table>
-    <tr><th>id</th><th>code</th><th>hidden</th><th>action</th></tr>
+    <tr><th>id</th><th>code</th><th>name</th><th>group_mode</th><th>print_line_1</th><th>print_line_2</th><th>hidden</th><th>action</th></tr>
     {% for c in courses_list %}
     <tr>
     <td>{{c.key|gae_key}}</td>
     <td>{{c.code}}</td>
+    <td>{{c.name}}</td>
+    <td>{{c.group_mode}}</td>
+    <td>{{c.print_line_1}}</td>
+    <td>{{c.print_line_2}}</td>
     <td>{{c.hidden}}</td>
     <td>
         <a class='button' href='{{c.key.id}}/'>show</a>&nbsp;        

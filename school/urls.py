@@ -34,6 +34,9 @@ urlpatterns = patterns('school.views',
     (r'^students/(?P<season_id>\d+)/(?P<category_id>\d+)/(?P<course_id>\d+)/(?P<group_id>\d+)/(?P<student_id>\d+)/$', 'student_index'),
     (r'^students/(?P<season_id>\d+)/(?P<category_id>\d+)/(?P<course_id>\d+)/(?P<group_id>\d+)/(?P<student_id>\d+)/edit/$', 'student_edit'),
 
+
+    (r'^import_csv_backup/(?P<file_key>[^/]+)/?$', 'import_csv_backup'),
+
     (r'^enrolment/$', 'enrolment_index'),
 )
 

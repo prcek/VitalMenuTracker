@@ -13,7 +13,7 @@ from utils.config import getConfig
 from google.appengine.api import taskqueue
 from google.appengine.ext import db
 from school.models import Season,Category,Course,Group,Student
-
+import school.data
 import logging
 
 
@@ -74,7 +74,7 @@ def get_course_navi_list(season_key, actual=None):
         courses.append(course)
     for category in categories_query:
         if category.key() in cat_set:
-            sub_list = [{'label':c.code, 'value':'%s/%s'%(category.key().id(),c.key().id()), 'selected':(c.key()==actual.key())} for c in courses if c.parent_key()==category.key()] 
+            sub_list = [{'label':c.code, 'value':'%s/%s'%(category.key().id(),c.key().id()), 'selected':(actual and c.key()==actual.key())} for c in courses if c.parent_key()==category.key()] 
             result.append({'label':category.name,'value':category.key(), 'list':sub_list})
     return result 
 
@@ -457,7 +457,7 @@ def course_show(request,season_id, category_id, course_id):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ( 'code','hidden' )
+        fields = ( 'code','name','group_mode','print_line_1', 'print_line_2', 'hidden' )
 
     def clean_code(self):
         data = self.cleaned_data['code']
@@ -676,6 +676,9 @@ def student_edit(request, season_id, category_id, course_id, group_id, student_i
     return render_to_response('school/student_edit.html', RequestContext(request, {'form':form}))
 
 
+def import_csv_backup(request,file_key):
+    result = school.data.import_test(file_key)
+    return HttpResponse(result)
 
 def enrolment_index(request):
     return render_to_response('school/enrolment_index.html', RequestContext(request))
