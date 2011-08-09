@@ -12,7 +12,7 @@ from reportlab.lib.colors import HexColor
 from reportlab.lib.units import inch,mm,cm
 
 CARDS_PAGE_SIZE=A4 #(22*cm,30*cm)
-CARDS_PAGE_BORDER_RECT=(cm,cm,CARDS_PAGE_SIZE[0]-2*cm,CARDS_PAGE_SIZE[1]-2*cm)
+CARDS_PAGE_BORDER_RECT=(2*cm,1.5*cm,CARDS_PAGE_SIZE[0]-4*cm,CARDS_PAGE_SIZE[1]-2.5*cm)
 
 CARDS_PAGE_BORDER_COLOR=HexColor('#f0f0f0')
 
