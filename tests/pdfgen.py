@@ -14,7 +14,10 @@ from reportlab.lib.units import inch,mm,cm
 CARDS_PAGE_SIZE=A4 #(22*cm,30*cm)
 CARDS_PAGE_BORDER_RECT=(2*cm,1.5*cm,CARDS_PAGE_SIZE[0]-4*cm,CARDS_PAGE_SIZE[1]-2.5*cm)
 
-CARDS_PAGE_BORDER_COLOR=HexColor('#f0f0f0')
+CARDS_PAGE_BORDER_COLOR=None # HexColor('#f0f0f0')
+CARDS_PAGE_CARD_CROP_BORDER_COLOR=HexColor('#e0e0e0')
+CARDS_PAGE_CARD_BLACK_COLOR=HexColor('#000000')
+CARDS_PAGE_CARD_WHITE_COLOR=HexColor('#FFFFFF')
 
 CARDS_COLS=2
 CARDS_ROWS=5
@@ -24,17 +27,38 @@ def draw_card(c,max_width,max_height):
     c.saveState()
     c.setFont("Helvetica", 10)
     # choose some colors
-    c.setStrokeColorRGB(0.2,0.5,0.3)
-    c.setFillColorRGB(1,0,1)
-#    c.translate(0,3*mm)
-    c.rect(0,0,max_width,max_height)
+    if CARDS_PAGE_CARD_CROP_BORDER_COLOR:
+        c.setStrokeColor(CARDS_PAGE_CARD_CROP_BORDER_COLOR)
+        c.rect(0,0,max_width,max_height)
+
+    c.translate(5*mm,5*mm)
+    width = max_width-10*mm
+    height = max_height -10*mm
+    widths=(width-15*mm,15*mm) 
+    heights=(15*mm,height-25*mm,10*mm)
+
+    c.setStrokeColor(CARDS_PAGE_CARD_BLACK_COLOR) 
+    c.setFillColor(CARDS_PAGE_CARD_BLACK_COLOR)
+    c.rect(0,0,width,height)
+
+    c.rect(0,height-heights[0],widths[0],heights[0],fill=1)
+    c.line(0,height-heights[0],width,height-heights[0])
+
+    c.rect(0,0,widths[0],heights[2],fill=1)
+    c.line(0,heights[2],width,heights[2])
+
+    c.line(widths[0],0,widths[0],height)
+
+    c.setStrokeColor(CARDS_PAGE_CARD_WHITE_COLOR) 
+    c.setFillColor(CARDS_PAGE_CARD_WHITE_COLOR)
     c.drawString(0,0, "Hello Worlxxxd")
     c.restoreState()
 
 def draw_cards(c):
 #    c.setFont("Helvetica", 80) 
-    c.setStrokeColor(CARDS_PAGE_BORDER_COLOR)
-    c.rect(*CARDS_PAGE_BORDER_RECT)
+    if CARDS_PAGE_BORDER_COLOR:
+        c.setStrokeColor(CARDS_PAGE_BORDER_COLOR)
+        c.rect(*CARDS_PAGE_BORDER_RECT)
     for x in range(0,CARDS_COLS):
         for y in range(0,CARDS_ROWS):
             c.saveState()
