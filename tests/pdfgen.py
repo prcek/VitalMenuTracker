@@ -10,6 +10,16 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.colors import HexColor
 from reportlab.lib.units import inch,mm,cm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+
+import reportlab
+folderFonts = os.path.dirname(reportlab.__file__) + os.sep + 'fonts'
+pdfmetrics.registerFont(TTFont('DejaVuSansMono', os.path.join(folderFonts,'DejaVuSansMono.ttf')))
+
+
+
 
 CARDS_PAGE_SIZE=A4 #(22*cm,30*cm)
 CARDS_PAGE_BORDER_RECT=(2*cm,1.5*cm,CARDS_PAGE_SIZE[0]-4*cm,CARDS_PAGE_SIZE[1]-2.5*cm)
@@ -28,7 +38,9 @@ CARDS_ROWS=5
 
 def draw_card(c,max_width,max_height):
     c.saveState()
-    c.setFont("Helvetica", 10)
+#    c.setFont("Helvetica", 10)
+    c.setFont('DejaVuSansMono', 10)
+
     # choose some colors
     if CARDS_PAGE_CARD_CROP_BORDER_COLOR:
         c.setStrokeColor(CARDS_PAGE_CARD_CROP_BORDER_COLOR)
@@ -48,11 +60,13 @@ def draw_card(c,max_width,max_height):
     c.rect(0,height-heights[0],widths[0],heights[0],fill=1)
     c.line(0,height-heights[0],width,height-heights[0])
     c.setFillColor(CARDS_PAGE_CARD_WHITE_COLOR)
-    h = heights[0]/4
-    hs = heights[0]/12
-    c.drawCentredString(widths[0]/2,height-h-hs,CARDS_PAGE_CARD_TEXT_TOP_LINE_0)
-    c.drawCentredString(widths[0]/2,height-2*h-hs,CARDS_PAGE_CARD_TEXT_TOP_LINE_1)
-    c.drawCentredString(widths[0]/2,height-3*h-hs,CARDS_PAGE_CARD_TEXT_TOP_LINE_2)
+    hs = heights[0]/20
+    h = (heights[0]-hs)/2
+    c.setFontSize(h-hs)
+    c.drawCentredString(widths[0]/2,height-h+hs,CARDS_PAGE_CARD_TEXT_TOP_LINE_0)
+    c.setFontSize(h/2-hs)
+    c.drawCentredString(widths[0]/2,height-h+hs-(h/2),CARDS_PAGE_CARD_TEXT_TOP_LINE_1)
+    c.drawCentredString(widths[0]/2,height-h+hs-(h),CARDS_PAGE_CARD_TEXT_TOP_LINE_2)
     c.setFillColor(CARDS_PAGE_CARD_BLACK_COLOR)
 
     c.rect(0,0,widths[0],heights[2],fill=1)
