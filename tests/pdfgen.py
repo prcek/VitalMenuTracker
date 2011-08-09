@@ -18,6 +18,9 @@ CARDS_PAGE_BORDER_COLOR=None # HexColor('#f0f0f0')
 CARDS_PAGE_CARD_CROP_BORDER_COLOR=HexColor('#e0e0e0')
 CARDS_PAGE_CARD_BLACK_COLOR=HexColor('#000000')
 CARDS_PAGE_CARD_WHITE_COLOR=HexColor('#FFFFFF')
+CARDS_PAGE_CARD_TEXT_TOP_LINE_0 = "TOP TEXT L 0"
+CARDS_PAGE_CARD_TEXT_TOP_LINE_1 = "TOP TEXT L 1"
+CARDS_PAGE_CARD_TEXT_TOP_LINE_2 = "TOP TEXT L 2"
 
 CARDS_COLS=2
 CARDS_ROWS=5
@@ -41,8 +44,16 @@ def draw_card(c,max_width,max_height):
     c.setFillColor(CARDS_PAGE_CARD_BLACK_COLOR)
     c.rect(0,0,width,height)
 
+
     c.rect(0,height-heights[0],widths[0],heights[0],fill=1)
     c.line(0,height-heights[0],width,height-heights[0])
+    c.setFillColor(CARDS_PAGE_CARD_WHITE_COLOR)
+    h = heights[0]/4
+    hs = heights[0]/12
+    c.drawCentredString(widths[0]/2,height-h-hs,CARDS_PAGE_CARD_TEXT_TOP_LINE_0)
+    c.drawCentredString(widths[0]/2,height-2*h-hs,CARDS_PAGE_CARD_TEXT_TOP_LINE_1)
+    c.drawCentredString(widths[0]/2,height-3*h-hs,CARDS_PAGE_CARD_TEXT_TOP_LINE_2)
+    c.setFillColor(CARDS_PAGE_CARD_BLACK_COLOR)
 
     c.rect(0,0,widths[0],heights[2],fill=1)
     c.line(0,heights[2],width,heights[2])
