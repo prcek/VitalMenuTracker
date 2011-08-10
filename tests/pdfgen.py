@@ -17,6 +17,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 import reportlab
 folderFonts = os.path.dirname(reportlab.__file__) + os.sep + 'fonts'
 pdfmetrics.registerFont(TTFont('DejaVuSansMono', os.path.join(folderFonts,'DejaVuSansMono.ttf')))
+pdfmetrics.registerFont(TTFont('DejaVuSans', os.path.join(folderFonts,'DejaVuSans.ttf')))
+pdfmetrics.registerFont(TTFont('DejaVuSansBold', os.path.join(folderFonts,'DejaVuSansBold.ttf')))
 
 
 
@@ -39,7 +41,7 @@ CARDS_ROWS=5
 def draw_card(c,max_width,max_height):
     c.saveState()
 #    c.setFont("Helvetica", 10)
-    c.setFont('DejaVuSansMono', 10)
+    c.setFont('DejaVuSansBold', 10)
 
     # choose some colors
     if CARDS_PAGE_CARD_CROP_BORDER_COLOR:
