@@ -1,4 +1,5 @@
 #!/usr/bin/python2.6
+ # -*- coding: utf-8 -*-
 
 import sys
 import os
@@ -21,7 +22,7 @@ pdfmetrics.registerFont(TTFont('DejaVuSans', os.path.join(folderFonts,'DejaVuSan
 pdfmetrics.registerFont(TTFont('DejaVuSansBold', os.path.join(folderFonts,'DejaVuSansBold.ttf')))
 
 
-
+TEST_TEXT = "Příliš žluťoučký kůň úpěl ďábelské ódy"
 
 CARDS_PAGE_SIZE=A4 #(22*cm,30*cm)
 CARDS_PAGE_BORDER_RECT=(2*cm,1.5*cm,CARDS_PAGE_SIZE[0]-4*cm,CARDS_PAGE_SIZE[1]-2.5*cm)
@@ -106,7 +107,8 @@ def hello_pdf():
     # move the origin up and to the left
     c.translate(inch,inch)
     # define a large font
-    c.setFont("Helvetica", 80)
+    #c.setFont("Helvetica", 80)
+    c.setFont('DejaVuSansBold', 30)
     # choose some colors
     c.setStrokeColorRGB(0.2,0.5,0.3)
     c.setFillColorRGB(1,0,1)
@@ -117,7 +119,15 @@ def hello_pdf():
     # change color
     c.setFillColorRGB(0,0,0.77)
     # say hello (note after rotate the y coord needs to be negative!)
-    c.drawString(3*inch, -3*inch, "Hello Worlxxxd")
+    c.setFont('DejaVuSansBold', 20)
+    c.drawString(0, -3*inch, "DejaVuSansBold %s"% TEST_TEXT)
+    c.setFont('DejaVuSans', 20)
+    c.drawString(0, -4*inch, "DejaVuSans %s" %TEST_TEXT)
+    c.setFont('DejaVuSansMono', 20)
+    c.drawString(0, -5*inch, "DejaVuSansMono %s" %TEST_TEXT)
+
+
+
     c.showPage()
     c.save()
 
