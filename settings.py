@@ -108,7 +108,6 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
      'appengine_django',
      'accounts',
-     'emails',
      'utils',
      'reports',
      'vital',

@@ -5,13 +5,6 @@ app_menu = [
                     { 'name':'list', 'url':'/accounts/' },
                 ]
     },
-    {'name':'emails', 'url':'/emails/' , 'access':'u',
-     'submenu': [
-                    { 'name':'groups', 'url':'/emails/groups/' },
-                    { 'name':'templates', 'url':'/emails/templates/' },
-                    { 'name':'jobs', 'url':'/emails/jobs/' },
-                ]
-    },
 
     {'name':'utils', 'url':'/utils/' ,
      'submenu': [
@@ -43,18 +36,6 @@ app_menu = [
                     { 'name':'clearance', 'url':'/vital/clearance/', 'access':'p' },
                     { 'name':'extra', 'url':'/vital/extra/', 'access':'p' },
                     { 'name':'orders', 'url':'/vital/orders/', 'access':'p' }
-                ]
-    },
-    {'name':'school', 'url':'/school/', 'access':'a',
-     'submenu': [
-                    { 'name':'index', 'url':'/school/', 'access':'a' },
-                    { 'name':'test', 'url':'/school/test/', 'access':'a' },
-                    { 'name':'test_navi', 'url':'/school/test_navi/', 'access':'a' },
-                    { 'name':'seasons', 'url':'/school/seasons/', 'access':'a' },
-                    { 'name':'categories', 'url':'/school/categories/', 'access':'a' },
-                    { 'name':'courses', 'url':'/school/courses/', 'access':'a' },
-                    { 'name':'students', 'url':'/school/students/', 'access':'a' },
-                    { 'name':'enrolment', 'url':'/school/enrolment/', 'access':'a' },
                 ]
     },
 
