@@ -1,4 +1,4 @@
-application: test-vitalmenu
+application: vitalmenu
 version: 14-test
 runtime: python
 api_version: 1
