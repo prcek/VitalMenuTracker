@@ -159,20 +159,18 @@ def incoming_email(request, file_key):
         logging.info('import order')
         process_incoming_email_order(email)
         return HttpResponse("ok - import order")
+    else:
+        logging.info('not to import-order@....')
 
     if a_from == 'info@vitalmenu.cz':
         logging.info('import order')
         process_incoming_email_order(email)
         return HttpResponse("ok - import order")
+    else:
+        logging.info('not from info@vitalmenu.cz')
 
-
-    r = re.match(r'^import-email-(\d+)@',a_to) 
-    if r:
-        logging.info('import email, id %s'%r.group(1))
-        process_incoming_email_template(r.group(1),data)
-        return HttpResponse("ok - import email")
         
-
+    logging.info('email ignored')
     return HttpResponse("ok -ign") 
 
 

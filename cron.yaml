@@ -1,8 +1,8 @@
 cron:
-- description: test report
-  url: /cron_jobs/report_test/
-  schedule: every 5 minutes synchronized
-  timezone: Europe/Prague
+#- description: test report
+#  url: /cron_jobs/report_test/
+#  schedule: every 5 minutes synchronized
+#  timezone: Europe/Prague
 
 - description: daily report 
   url: /cron_jobs/report_daily/
