@@ -1,42 +1,30 @@
-from google.appengine.api import users
-from google.appengine.ext import blobstore
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import blobstore_handlers
-from google.appengine.ext.webapp.util import run_wsgi_app
-import urllib
+import os
+import sys
 import logging
+sys.path.append(os.path.join(os.path.dirname(__file__), 'libs'))
+
+import cloudstorage as gcs 
+
+app_bucket = "vitalmenu"
 
 
-def log_args(r):
-    for a in r.arguments():
-        logging.info('arg "%s"="%s"' % (a,r.get(a)))
+def write_file(filename, data):
+    name = "/"+app_bucket+"/"+filename
+    write_retry_params = gcs.RetryParams(backoff_factor=1.1)
+    logging.info("opening new file %s" % name)
+    gcs_file = gcs.open(name,'w', content_type='text/plain',options={'x-goog-meta-foo': 'foo', 'x-goog-meta-bar': 'bar'}, retry_params=write_retry_params)
+    gcs_file.write(data)
+    gcs_file.close()
+    logging.info("write ok")
 
-class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
-    def post(self):
-        try:
-            for upload in self.get_uploads():
-                logging.info('upload done - key:"%s"'%upload.key())
-            
-            self.redirect('%s%s'%(self.request.get('post_action_ok'),upload.key()))
-        except:
-            self.redirect(self.request.get('post_action_error'))
 
-class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
-    def get(self, key):
-        key = str(urllib.unquote(key))
-        logging.info('download key:"%s"'%key)
-        if not blobstore.get(key):
-            self.error(404)
-        else:
-            blob_info = blobstore.BlobInfo.get(key)
-            self.send_blob(key,save_as=blob_info.filename) 
+def read_file(filename):
+    name = "/"+app_bucket+"/"+filename
+    logging.info("opening file for reading %s" %name)
+    gcs_file = gcs.open(name)
+    data = gcs_file.read()
+    gcs_file.close()
+    logging.info("read ok")
+    return data  
 
-application = webapp.WSGIApplication([('/upload', UploadHandler),
-                                      ('/download/([^/]+)?/?', DownloadHandler),
-                                     ], debug=True)
 
-def main():
-    run_wsgi_app(application)
-
-if __name__ == '__main__':
-    main()

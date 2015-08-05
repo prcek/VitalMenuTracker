@@ -1,39 +1,11 @@
 from __future__ import with_statement
-from google.appengine.api import files
-from google.appengine.ext import blobstore
+import files
+import uuid
 import logging, email, time
 from google.appengine.ext import webapp 
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler 
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import taskqueue
-
-def store_raw_data_as_blob(data,name,content_type):
-    logging.info('store (bin) raw_data as %s (%s)'%(name,content_type))
-    file_name = files.blobstore.create(mime_type=content_type, _blobinfo_uploaded_filename = name)
-    with files.open(file_name, 'a') as out:
-        out.write(data)
-    files.finalize(file_name)
-    blob_key = files.blobstore.get_blob_key(file_name)
-
-#http://code.google.com/p/googleappengine/issues/detail?id=4872 
-#FIXME
-
-    if not blob_key:
-        logging.info('again....1')
-        time.sleep(1)
-        blob_key = files.blobstore.get_blob_key(file_name)
-
-    if not blob_key:
-        logging.info('again....2')
-        time.sleep(1)
-        blob_key = files.blobstore.get_blob_key(file_name)
-
-#endofhack 
-        
-    logging.info('file key:%s'%blob_key)
-    return blob_key
-
-
 
 
 
@@ -44,21 +16,19 @@ class LogSenderHandler(InboundMailHandler):
 
     def receive(self, mail_message):
 
+        filename= 'inmail/' + str(uuid.uuid4())
         logging.info('INMAIL_TEST handler')
         logging.info("Received a message from: %s, to: %s" % (mail_message.sender, mail_message.to))
         logging.info("mail date: %s" % mail_message.date)
         logging.info("subject: %s" % mail_message.subject)
-        
+        logging.info("filename %s" % filename)
         data = mail_message.original.as_string(unixfrom=True)
-        #data = mail_message.to_mime_message().as_string(unixfrom=True)
-        logging.info(data)
 
-        fk = store_raw_data_as_blob(data,'-email-','text/plain')
-        if fk is None:
-            logging.warning("can't store blob - no BlobKey received")
-        else:
-            taskqueue.add(url='/tasks/incoming_email/%s/'%fk, method='GET')
-            logging.info("import task scheduled")
+        files.write_file(filename,data)
+
+        taskqueue.add(url='/tasks/incoming_email/', params={'filename':filename})
+
+        logging.info("import task scheduled")
 
 def main():
     application = webapp.WSGIApplication([LogSenderHandler.mapping()], debug=True)

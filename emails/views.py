@@ -11,7 +11,7 @@ import logging
 from email.utils import parseaddr
 from emails.models import EMailList,EMailTemplate,EMailJob,EMailSubJob,EMailJobData
 from vital.views import process_incoming_email_order
-
+import files
 from utils.data import get_blob_data
 from google.appengine.api.mail import EmailMessage
 from google.appengine.api import taskqueue
@@ -141,10 +141,12 @@ def process_incoming_email_template(template_id, data):
  
 
 
-def incoming_email(request, file_key):
-    logging.info('processing incoming email %s'%file_key)
+def incoming_email(request):
+    logging.info(request.POST)
+    filename= request.POST['filename']
+    logging.info('processing incoming email %s'%filename)
+    data = files.read_file(filename)
 
-    data = get_blob_data(file_key)
     if data is None:
         raise Http404
 
